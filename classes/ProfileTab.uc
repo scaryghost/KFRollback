@@ -26,17 +26,17 @@ function SaveSettings()
 		}
 	}
 
-	class'KFPlayerController'.default.SelectedVeterancy = class'KFGameType'.default.LoadedSkills[lb_PerkSelect.GetIndex()];
+	class'KFRPlayerController'.default.SelectedVeterancy = class'PerkList'.default.perks[lb_PerkSelect.GetIndex()];
 
-	if ( KFPlayerController(PC) != none )
+	if ( KFRPlayerController(PC) != none )
 	{
-		KFPlayerController(PC).SelectedVeterancy = class'KFGameType'.default.LoadedSkills[lb_PerkSelect.GetIndex()];
-		KFPlayerController(PC).SendSelectedVeterancyToServer();
+		KFRPlayerController(PC).SelectedVeterancy = class'PerkList'.default.perks[lb_PerkSelect.GetIndex()];
+		KFRPlayerController(PC).SendSelectedVeterancyToServer();
 		PC.SaveConfig();
 	}
 	else
 	{
-		class'KFPlayerController'.static.StaticSaveConfig();
+		class'KFRPlayerController'.static.StaticSaveConfig();
 	}
 }
 
@@ -48,9 +48,20 @@ function OnPerkSelected(GUIComponent Sender)
 	}
 	else
 	{
-		lb_PerkEffects.SetContent(class'KFGameType'.default.LoadedSkills[lb_PerkSelect.GetIndex()].default.LevelEffects[KFStatsAndAchievements.PerkHighestLevelAvailable(lb_PerkSelect.GetIndex())]);
+		lb_PerkEffects.SetContent(class'PerkList'.default.perks[lb_PerkSelect.GetIndex()].default.LevelEffects[KFStatsAndAchievements.PerkHighestLevelAvailable(lb_PerkSelect.GetIndex())]);
 
 		lb_PerkProgress.List.PerkChanged(KFStatsAndAchievements, lb_PerkSelect.GetIndex());
 	}
 }
 
+defaultproperties {
+    Begin Object Class=KFPerkSelectListBox Name=PerkSelectList
+        OnCreateComponent=PerkSelectList.InternalOnCreateComponent
+        WinTop=0.082969
+        WinLeft=0.323418
+        WinWidth=0.318980
+        WinHeight=0.654653
+        DefaultListClass="KFRollback.KFRPerkSelectList"
+    End Object
+    lb_PerkSelect=KFPerkSelectListBox'KFRollback.ProfileTab.PerkSelectList'
+}
