@@ -44,4 +44,5 @@ function SelectVeterancy(class<KFVeterancyTypes> VetSkill, optional bool bForceC
 
 defaultproperties {
     LobbyMenuClassString="KFRollback.KFRLobbyMenu"
+    MidGameMenuClass="KFRollback.KFRInvasionLoginMenu"
 }

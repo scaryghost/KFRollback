@@ -12,6 +12,8 @@ function PostBeginPlay() {
     AddToPackageMap();
     Level.Game.PlayerControllerClass= class'KFRollback.KFRPlayerController';
     Level.Game.PlayerControllerClassName= "KFRollback.KFRPlayerController";
+
+    DeathMatch(Level.Game).LoginMenuClass= "KFRollback.KFRInvasionLoginMenu";
 }
 
 function bool CheckReplacement(Actor Other, out byte bSuperRelevant) {
