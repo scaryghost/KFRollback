@@ -110,3 +110,9 @@ function bool OnFooterClick(GUIComponent Sender)
 
 	return false;
 }
+
+function OnSteamStatsAndAchievementsReady()
+{
+	PlayerOwner().ClientOpenMenu(class'KFRLobbyMenu'.default.profilePage, false);
+}
+

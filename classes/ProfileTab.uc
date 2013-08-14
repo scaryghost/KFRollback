@@ -48,7 +48,7 @@ function OnPerkSelected(GUIComponent Sender)
 	}
 	else
 	{
-		lb_PerkEffects.SetContent(class'PerkList'.default.perks[lb_PerkSelect.GetIndex()].default.LevelEffects[KFStatsAndAchievements.PerkHighestLevelAvailable(lb_PerkSelect.GetIndex())]);
+		lb_PerkEffects.SetContent(class'PerkList'.default.perks[lb_PerkSelect.GetIndex()].default.LevelEffects[KFPlayerReplicationInfo(PlayerOwner().PlayerReplicationInfo).ClientVeteranSkillLevel]);
 
 		lb_PerkProgress.List.PerkChanged(KFStatsAndAchievements, lb_PerkSelect.GetIndex());
 	}
@@ -64,4 +64,14 @@ defaultproperties {
         DefaultListClass="KFRollback.KFRPerkSelectList"
     End Object
     lb_PerkSelect=KFPerkSelectListBox'KFRollback.ProfileTab.PerkSelectList'
+
+    Begin Object Class=KFPerkProgressListBox Name=PerkProgressList
+        OnCreateComponent=PerkProgressList.InternalOnCreateComponent
+        WinTop=0.439668
+        WinLeft=0.670121
+        WinWidth=0.319980
+        WinHeight=0.292235
+        DefaultListClass="KFRollback.KFRPerkProgressList"
+    End Object
+    lb_PerkProgress=KFPerkProgressListBox'KFRollback.ProfileTab.PerkProgressList'
 }

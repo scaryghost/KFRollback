@@ -22,8 +22,8 @@ function InitList(KFSteamStatsAndAchievements StatsAndAchievements)
 	for ( i = 0; i < ItemCount; i++ )
 	{
 		PerkName[PerkName.Length] = class'PerkList'.default.perks[i].default.VeterancyName;
-		PerkLevelString[PerkLevelString.Length] = LvAbbrString @ (KFStatsAndAchievements.PerkHighestLevelAvailable(i));
-		PerkProgress[PerkProgress.Length] = KFStatsAndAchievements.GetPerkProgress(i);
+		PerkLevelString[PerkLevelString.Length] = LvAbbrString @ KFPlayerReplicationInfo(KFPC.PlayerReplicationInfo).ClientVeteranSkillLevel;
+		PerkProgress[PerkProgress.Length] = 0;
 
 		if ( (KFPC != none && class'PerkList'.default.perks[i] == KFPC.SelectedVeterancy) ||
 			 (KFPC == none && class'PerkList'.default.perks[i] == class'KFRPlayerController'.default.SelectedVeterancy) )
