@@ -14,6 +14,14 @@ function PostBeginPlay() {
     Level.Game.PlayerControllerClassName= "KFRollback.KFRPlayerController";
 
     DeathMatch(Level.Game).LoginMenuClass= "KFRollback.KFRInvasionLoginMenu";
+    SetTimer(1.0, true);
+}
+
+function Timer() {
+    KFGameType(Level.Game).KFLRules.destroy();
+    KFGameType(Level.Game).KFLRules= spawn(class'KFRLevelRules');
+    SetTimer(0.0, false);
+    log("I have replaced your level rules!");
 }
 
 function bool CheckReplacement(Actor Other, out byte bSuperRelevant) {
