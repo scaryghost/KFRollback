@@ -22,10 +22,10 @@ defaultproperties
     ItemForSale(9)=Class'KFMod.BullpupPickup'
     ItemForSale(10)=Class'KFMod.AK47Pickup'
     ItemForSale(11)=Class'KFMod.KnifePickup'
-    ItemForSale(12)=Class'KFMod.MachetePickup'
-    ItemForSale(13)=Class'KFMod.AxePickup'
-    ItemForSale(14)=Class'KFMod.KatanaPickup'
-    ItemForSale(15)=Class'KFMod.ChainsawPickup'
+    ItemForSale(12)=Class'KFRollback.MachetePickup'
+    ItemForSale(13)=Class'KFRollback.AxePickup'
+    ItemForSale(14)=Class'KFRollback.KatanaPickup'
+    ItemForSale(15)=Class'KFRollback.ChainsawPickup'
     ItemForSale(16)=Class'KFMod.FlameThrowerPickup'
 }
 
