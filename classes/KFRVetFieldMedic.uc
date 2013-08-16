@@ -8,6 +8,10 @@ static function float GetMovementSpeedModifier(KFPlayerReplicationInfo KFPRI, KF
     return 1.05 + (0.05 * float(KFPRI.ClientVeteranSkillLevel - 2)); // Moves up to 20% faster
 }
 
+static function class<Grenade> GetNadeType(KFPlayerReplicationInfo KFPRI) {
+	return class'Nade';
+}
+
 defaultproperties {
     VeterancyName="Field Medic"
 
