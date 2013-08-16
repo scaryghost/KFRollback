@@ -1,6 +1,6 @@
 class KFRLevelRules extends KFLevelRules;
 
-function PostBeginPlay() {
+simulated function PostBeginPlay() {
     local int i;
 
     for(i= 17; i < MAX_BUYITEMS; i++) {
@@ -8,8 +8,7 @@ function PostBeginPlay() {
     }
 }
 
-defaultproperties
-{
+defaultproperties {
     ItemForSale(0)=Class'KFMod.ShotgunPickup'
     ItemForSale(1)=Class'KFMod.BoomStickPickup'
     ItemForSale(2)=Class'KFMod.LAWPickup'
