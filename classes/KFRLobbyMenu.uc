@@ -353,7 +353,7 @@ function DrawPerk(Canvas Canvas) {
 
 
 defaultproperties {
-    modInfoText="KFRollback Mutator||If you cannot select a perk, type 'mutate perkchange $level' where level=[0,6]"
+    modInfoText="KFRollback Mutator||If you cannot select a perk, type 'mutate perkchange $index' where index=[0,5]"
     profilePage="KFRollback.KFRProfilePage"
 
     Begin Object Class=KFRLobbyFooter Name=Footer
