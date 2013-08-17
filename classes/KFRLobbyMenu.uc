@@ -2,6 +2,36 @@ class KFRLobbyMenu extends LobbyMenu;
 
 var string profilePage;
 
+function SetPlayerRec()
+{
+	local int i;
+	local array<xUtil.PlayerRecord> PList;
+
+	class'xUtil'.static.GetPlayerList(PList);
+
+	// Filter out to only characters without the 's' menu setting
+    for(i= 0; i < class'ModelSelect'.default.allowedCharacters.Length; i++) {
+        if (sChar ~= class'ModelSelect'.default.allowedCharacters[i]) {
+            break;
+        }
+    }
+    if (i >= class'ModelSelect'.default.allowedCharacters.Length) {
+        sChar= class'ModelSelect'.default.allowedCharacters[Rand(i)];
+        PlayerOwner().UpdateURL("Character", sChar, True);
+    }
+
+	for ( i = 0; i < PList.Length; i++ )
+	{
+		if ( sChar ~= Plist[i].DefaultName )
+		{
+			PlayerRec = PList[i];
+			break;
+		}
+	}
+
+	i_Portrait.Image = PlayerRec.Portrait;
+}
+
 function bool ShowPerkMenu(GUIComponent Sender) {
     if (PlayerOwner() != none) {
         PlayerOwner().ClientOpenMenu(profilePage, false);

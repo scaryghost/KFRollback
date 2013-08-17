@@ -27,7 +27,7 @@ function RefreshCharacterList(string ExcludedChars, optional string Race)
 		if ( PlayerList[i].DefaultName != "" )
 		{
 			for (j = 0; j < allowedCharacters.Length; j++) {
-				if ( allowedCharacters[j] == PlayerList[i].DefaultName ) {
+				if ( allowedCharacters[j] ~= PlayerList[i].DefaultName ) {
                     if ( IsUnLocked(PlayerList[i]) )
                     {
             			CharList.List.Add(Playerlist[i].Portrait, i, 0);
