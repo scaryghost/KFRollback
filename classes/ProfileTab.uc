@@ -36,18 +36,10 @@ function SaveSettings()
         }
     }
 
-    class'KFPlayerController'.default.SelectedVeterancy = class'PerkList'.default.perks[lb_PerkSelect.GetIndex()];
 
-    if ( KFPlayerController(PC) != none )
-    {
-        KFPlayerController(PC).SelectedVeterancy = class'PerkList'.default.perks[lb_PerkSelect.GetIndex()];
-        PC.ConsoleCommand("mutate perkchange "$lb_PerkSelect.GetIndex());
-        PC.SaveConfig();
-    }
-    else
-    {
-        class'KFPlayerController'.static.StaticSaveConfig();
-    }
+    KFPlayerController(PC).SelectedVeterancy = class'PerkList'.default.perks[lb_PerkSelect.GetIndex()];
+    PC.ConsoleCommand("mutate perkchange "$lb_PerkSelect.GetIndex());
+    PC.SaveConfig();
 }
 
 function OnPerkSelected(GUIComponent Sender)
