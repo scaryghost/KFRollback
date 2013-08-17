@@ -48,7 +48,7 @@ function Mutate(string Command, PlayerController Sender) {
 
     kfPC= KFPlayerController(Sender);
     kfRepInfo= KFPlayerReplicationInfo(kfPC.PlayerReplicationInfo);
-    if (kfPC != none && kfPC.SelectedVeterancy != none && kfRepInfo != none && 
+    if (kfPC != none && kfRepInfo != none && 
             parts.Length >= 2 && parts[0] ~= "perkchange") {
         index= int(parts[1]);
         kfPC.SelectedVeterancy= class'PerkList'.default.perks[index];
