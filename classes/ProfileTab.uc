@@ -1,5 +1,15 @@
 class ProfileTab extends KFTab_Profile;
 
+function bool PickModel(GUIComponent Sender)
+{
+	if ( Controller.OpenMenu("KFRollback.ModelSelect", PlayerRec.DefaultName, Eval(Controller.CtrlPressed, PlayerRec.Race, "")) )
+	{
+		Controller.ActivePage.OnClose = ModelSelectClosed;
+	}
+
+	return true;
+}
+
 function SaveSettings()
 {
 	local PlayerController PC;
