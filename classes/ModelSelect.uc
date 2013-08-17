@@ -11,8 +11,7 @@ function InitComponent(GUIController MyController, GUIComponent MyOwner) {
     }
 }
 
-function RefreshCharacterList(string ExcludedChars, optional string Race)
-{
+function RefreshCharacterList(string ExcludedChars, optional string Race) {
     local int i, j, len;
     local array<string> Excluded;
 
@@ -23,22 +22,18 @@ function RefreshCharacterList(string ExcludedChars, optional string Race)
     Split(ExcludedChars, ";", Excluded);
     len= PlayerList.Length;
     while(i < len) {
-		// Check that this character is selectable
-		if ( PlayerList[i].DefaultName != "" )
-		{
-			for (j = 0; j < allowedCharacters.Length; j++) {
-				if ( allowedCharacters[j] ~= PlayerList[i].DefaultName ) {
-                    if ( IsUnLocked(PlayerList[i]) )
-                    {
-            			CharList.List.Add(Playerlist[i].Portrait, i, 0);
+        // Check that this character is selectable
+        if (PlayerList[i].DefaultName != "") {
+            for (j = 0; j < allowedCharacters.Length; j++) {
+                if (allowedCharacters[j] ~= PlayerList[i].DefaultName) {
+                    if (IsUnLocked(PlayerList[i])) {
+                        CharList.List.Add(Playerlist[i].Portrait, i, 0);
                     }
-                    else if ( Playerlist[i].LockedPortrait == none )
-                    {
-            			CharList.List.Add(Playerlist[i].Portrait, i, 1);
+                    else if (Playerlist[i].LockedPortrait == none) {
+                        CharList.List.Add(Playerlist[i].Portrait, i, 1);
                     }
-                    else
-                    {
-                    	CharList.List.Add(Playerlist[i].LockedPortrait, i, 1);
+                    else {
+                        CharList.List.Add(Playerlist[i].LockedPortrait, i, 1);
                     }
                     break;
                 }
@@ -49,13 +44,13 @@ function RefreshCharacterList(string ExcludedChars, optional string Race)
                 PlayerList.Remove(i, 1);
                 len--;
             }
-		} else {
+        } else {
             i++;
         }
     }
 
-    CharList.List.LockedMat = LockedImage;
-    CharList.List.bNotify = True;
+    CharList.List.LockedMat= LockedImage;
+    CharList.List.bNotify= True;
 }
 
 defaultproperties {

@@ -1,37 +1,30 @@
 class ProfileTab extends KFTab_Profile;
 
-function bool PickModel(GUIComponent Sender)
-{
-    if ( Controller.OpenMenu("KFRollback.ModelSelect", PlayerRec.DefaultName, Eval(Controller.CtrlPressed, PlayerRec.Race, "")) )
-    {
+function bool PickModel(GUIComponent Sender) {
+    if (Controller.OpenMenu("KFRollback.ModelSelect", PlayerRec.DefaultName, Eval(Controller.CtrlPressed, PlayerRec.Race, ""))) {
         Controller.ActivePage.OnClose = ModelSelectClosed;
     }
 
     return true;
 }
 
-function SaveSettings()
-{
+function SaveSettings() {
     local PlayerController PC;
 
     PC = PlayerOwner();
 
-    if ( sChar != sCharD )
-    {
+    if (sChar != sCharD) {
         sCharD = sChar;
         PC.ConsoleCommand("ChangeCharacter"@sChar);
 
-        if ( !PC.IsA('xPlayer') )
-        {
+        if (!PC.IsA('xPlayer')) {
             PC.UpdateURL("Character", sChar, True);
         }
 
-        if ( PlayerRec.Sex ~= "Female" )
-        {
+        if (PlayerRec.Sex ~= "Female") {
             PC.UpdateURL("Sex", "F", True);
         }
-        else
-        {
+        else {
             PC.UpdateURL("Sex", "M", True);
         }
     }
@@ -42,8 +35,7 @@ function SaveSettings()
     PC.SaveConfig();
 }
 
-function OnPerkSelected(GUIComponent Sender)
-{
+function OnPerkSelected(GUIComponent Sender) {
     lb_PerkEffects.SetContent(class'PerkList'.default.perks[lb_PerkSelect.GetIndex()].default.LevelEffects[KFPlayerReplicationInfo(PlayerOwner().PlayerReplicationInfo).ClientVeteranSkillLevel]);
     lb_PerkProgress.List.PerkChanged(KFStatsAndAchievements, lb_PerkSelect.GetIndex());
 }

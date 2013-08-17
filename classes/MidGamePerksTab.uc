@@ -1,20 +1,16 @@
 class MidGamePerksTab extends KFTab_MidGamePerks;
 
-function bool OnSaveButtonClicked(GUIComponent Sender)
-{
+function bool OnSaveButtonClicked(GUIComponent Sender) {
     local PlayerController PC;
 
     PC = PlayerOwner();
-
-
     KFPlayerController(PC).SelectedVeterancy = class'PerkList'.default.perks[lb_PerkSelect.GetIndex()];
     PC.ConsoleCommand("mutate perkchange "$lb_PerkSelect.GetIndex());
     PC.SaveConfig();
     return true;
 }
 
-function OnPerkSelected(GUIComponent Sender)
-{
+function OnPerkSelected(GUIComponent Sender) {
     lb_PerkEffects.SetContent(class'PerkList'.default.perks[lb_PerkSelect.GetIndex()].default.LevelEffects[KFPlayerReplicationInfo(PlayerOwner().PlayerReplicationInfo).ClientVeteranSkillLevel]);
     lb_PerkProgress.List.PerkChanged(KFStatsAndAchievements, lb_PerkSelect.GetIndex());
 }
