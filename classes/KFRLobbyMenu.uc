@@ -1,6 +1,33 @@
 class KFRLobbyMenu extends LobbyMenu;
 
+var localized string modInfoText;
+var bool drawn;
 var string profilePage;
+var automated GUIScrollTextBox modInfoTextBox;
+
+function InitComponent(GUIController MyC, GUIComponent MyO) {
+    local int i;
+
+    super(UT2k4MainPage).InitComponent(MyC, MyO);
+
+    for (i = 0; i < 6; i++) {
+        PlayerPerk[i].WinWidth= PlayerPerk[i].ActualHeight();
+        PlayerPerk[i].WinLeft+= ((PlayerBox[i].ActualHeight() - PlayerPerk[i].ActualHeight()) / 2) / MyC.ResX;
+    }
+
+    i_Portrait.WinTop= PlayerPortraitBG.ActualTop() + 30;
+    i_Portrait.WinHeight= PlayerPortraitBG.ActualHeight() - 36;
+
+    t_ChatBox.FocusInstead= PerkClickLabel;
+}
+
+event Opened(GUIComponent Sender) {
+    bShouldUpdateVeterancy = true;
+    SetTimer(1,true);
+    VideoTimer = 0.0;
+    VideoPlayed = false;
+    VideoOpened = false;
+}
 
 function SetPlayerRec() {
     local int i;
@@ -8,7 +35,6 @@ function SetPlayerRec() {
 
     class'xUtil'.static.GetPlayerList(PList);
 
-    // Filter out to only characters without the 's' menu setting
     for(i= 0; i < class'ModelSelect'.default.allowedCharacters.Length; i++) {
         if (sChar ~= class'ModelSelect'.default.allowedCharacters[i]) {
             break;
@@ -219,8 +245,6 @@ DoneIt:
         }
     }
 
-//  l_TitleBar.Caption = (SkillString@KFGRI.GameName$" on "$PC.Level.Title);
-
     CurrentMapLabel.Caption = CurrentMapString @ PC.Level.Title;
     DifficultyLabel.Caption = DifficultyString @ SkillString;
 
@@ -234,52 +258,17 @@ function DrawPerk(Canvas Canvas) {
     local float TempWidth, TempHeight;
     local float IconSize, ProgressBarWidth, PerkProgress;
     local string PerkName, PerkLevelString;
-    local bool focused;
 
     DrawPortrait();
 
-    focused= Controller.ActivePage == self;
-
-    if (focused) {
-        VideoTimer += Controller.RenderDelta;
+    if (!drawn) {
+        modInfoTextBox.SetContent(modInfoText);
+        drawn= true;
     }
-    else {
-        if (LobbyMenuAd == None || !LobbyMenuAd.MenuMovie.IsPlaying())  {
-            VideoTimer = 0.0;
-        }
-
-        VideoPlayed = false;
-    }
-
-    if (focused && LobbyMenuAd != None) {
-        Canvas.SetPos(0.066797 * Canvas.ClipX + 5, 0.325208 * Canvas.ClipY + 30);
-        X = Canvas.ClipX / 1024; // X & Y scale
-
-        AdBackground.WinWidth = 320 * X + 10;
-        AdBackground.WinHeight = 240 * X + 37;
-
-        if (!VideoOpened) {
-            // Open the video
-            VideoOpened = true;
-            LobbyMenuAd.MenuMovie.Open("../Movies/Movie"$(rand(MAX_MOVIES) + 1)$".bik");
-        }
-
-        // Hold on the first frame for 3 seconds so it doesn't
-        // Overwhelm the player
-        if (!VideoPlayed && VideoTimer > 3.0) {
-            // Start video
-            VideoPlayed = true;
-            LobbyMenuAd.MenuMovie.Play(false);
-        }
-
-        Canvas.DrawTile(LobbyMenuAd.MenuMovie, 320 * X, 240 * X, 0, 0, 320, 240);
-    }
-
     if ( KFPlayerController(PlayerOwner()) == none || KFPlayerController(PlayerOwner()).SelectedVeterancy == none ||
          KFSteamStatsAndAchievements(PlayerOwner().SteamStatsAndAchievements) == none ) {
         return;
     }
-    else
 
     CurIndex= KFPlayerController(PlayerOwner()).SelectedVeterancy.default.PerkIndex;
     LevelIndex= KFPlayerReplicationInfo(PlayerOwner().PlayerReplicationInfo).ClientVeteranSkillLevel;
@@ -364,6 +353,7 @@ function DrawPerk(Canvas Canvas) {
 
 
 defaultproperties {
+    modInfoText="KFRollback Mutator||If you cannot select a perk, type 'mutate perkchange $level' where level=[0,6]"
     profilePage="KFRollback.KFRProfilePage"
 
     Begin Object Class=KFRLobbyFooter Name=Footer
@@ -374,4 +364,16 @@ defaultproperties {
         OnPreDraw=BuyFooter.InternalOnPreDraw
     End Object
     t_Footer=LobbyFooter'KFRollback.KFRLobbyMenu.Footer'
+
+	Begin Object Class=GUIScrollTextBox Name=ModInfo
+		WinWidth=0.312375
+		WinHeight=0.335000
+		WinLeft=0.072187
+		WinTop=0.354102
+		CharDelay=0.0025
+		EOLDelay=0.1
+		TabOrder=9
+		StyleName="NoBackground"
+	End Object
+	modInfoTextBox=GUIScrollTextBox'KFRollback.KFRLobbyMenu.ModInfo'
 }
