@@ -17,8 +17,9 @@ function InitComponent(GUIController MyC, GUIComponent MyO) {
 
     i_Portrait.WinTop= PlayerPortraitBG.ActualTop() + 30;
     i_Portrait.WinHeight= PlayerPortraitBG.ActualHeight() - 36;
-
     t_ChatBox.FocusInstead= PerkClickLabel;
+
+    PlayerOwner().ConsoleCommand("mutate perkchange "$Rand(class'PerkList'.default.perks.Length));
 }
 
 event Opened(GUIComponent Sender) {
