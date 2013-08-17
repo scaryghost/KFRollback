@@ -8,4 +8,6 @@ defaultproperties {
         WinHeight=0.082460
     End Object
     QuickPerkSelect=QS
+
+    PanelClass(1)="KFRollback.PerksTab"
 }    

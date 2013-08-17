@@ -39,6 +39,260 @@ function bool ShowPerkMenu(GUIComponent Sender) {
     return true;
 }
 
+function bool InternalOnPreDraw(Canvas C)
+{
+	local int i, j, z;
+	local string StoryString;
+	local String SkillString;
+	local KFGameReplicationInfo KFGRI;
+	local PlayerController PC;
+	local PlayerReplicationInfo InList[6];
+	local bool bWasThere, bShowProfilePage;
+
+	PC = PlayerOwner();
+
+	if ( PC == none || PC.Level == none ) // Error?
+	{
+		return false;
+	}
+
+	i_Portrait.WinTop = PlayerPortraitBG.ActualTop() + 30;
+	i_Portrait.WinHeight = PlayerPortraitBG.ActualHeight() - 36;
+
+	if ( PC.PlayerReplicationInfo != none && (!PC.PlayerReplicationInfo.bWaitingPlayer || PC.PlayerReplicationInfo.bOnlySpectator) )
+	{
+		PC.ClientCloseMenu(True,False);
+		return false;
+	}
+
+	t_Footer.InternalOnPreDraw(C);
+
+	WaveLabel.WinWidth = WaveLabel.ActualHeight();
+
+   	KFGRI = KFGameReplicationInfo(PC.GameReplicationInfo);
+
+	if ( KFGRI != none )
+	{
+		WaveLabel.Caption = string(KFGRI.WaveNumber + 1) $ "/" $ string(KFGRI.FinalWave);
+	}
+	else
+	{
+		WaveLabel.Caption = "?/?";
+	}
+
+	if ( KFPlayerController(PC) != none && bShouldUpdateVeterancy )
+	{
+		if ( KFPlayerController(PC).SelectedVeterancy == none )
+		{
+			bShowProfilePage = true;
+
+			if ( PC.SteamStatsAndAchievements == none )
+			{
+				if ( PC.Level.NetMode != NM_Client )
+				{
+	    			PC.SteamStatsAndAchievements = PC.Spawn(PC.default.SteamStatsAndAchievementsClass, PC);
+					if ( !PC.SteamStatsAndAchievements.Initialize(PC) )
+					{
+		            	Controller.OpenMenu(Controller.QuestionMenuClass);
+				    	GUIQuestionPage(Controller.TopPage()).SetupQuestion(class'KFMainMenu'.default.UnknownSteamErrorText, QBTN_Ok, QBTN_Ok);
+						PC.SteamStatsAndAchievements.Destroy();
+						PC.SteamStatsAndAchievements = none;
+	    			}
+	    			else
+	    			{
+	    				PC.SteamStatsAndAchievements.OnDataInitialized = OnSteamStatsAndAchievementsReady;
+	    			}
+	    		}
+
+   				bShowProfilePage = false;
+			}
+    		else if ( !PC.SteamStatsAndAchievements.bInitialized )
+    		{
+   				PC.SteamStatsAndAchievements.OnDataInitialized = OnSteamStatsAndAchievementsReady;
+   				PC.SteamStatsAndAchievements.GetStatsAndAchievements();
+   				bShowProfilePage = false;
+    		}
+
+			if ( KFSteamStatsAndAchievements(PC.SteamStatsAndAchievements) != none )
+			{
+	    		for ( i = 0; i < class'KFGameType'.default.LoadedSkills.Length; i++ )
+	    		{
+	    			if ( KFSteamStatsAndAchievements(PC.SteamStatsAndAchievements).GetPerkProgress(i) < 0.0 )
+	    			{
+	    				PC.SteamStatsAndAchievements.OnDataInitialized = OnSteamStatsAndAchievementsReady;
+	    				PC.SteamStatsAndAchievements.GetStatsAndAchievements();
+				    	bShowProfilePage = false;
+	    			}
+	    		}
+	    	}
+
+			if ( bShowProfilePage )
+			{
+				OnSteamStatsAndAchievementsReady();
+			}
+
+			bShouldUpdateVeterancy = false;
+		}
+		else if ( PC.SteamStatsAndAchievements != none && PC.SteamStatsAndAchievements.bInitialized )
+		{
+            PC.ConsoleCommand("mutate perkchange "$KFPlayerController(PC).SelectedVeterancy.default.PerkIndex);
+			bShouldUpdateVeterancy = false;
+		}
+	}
+
+/*	if ( KFGRI == none ) // May not have been received yet on client.
+	{
+		l_TitleBar.Caption = WaitingForServerStatus;
+		Return False;
+	}
+*/
+	// First fill in non-ready players.
+
+
+	if ( KFGRI != none )
+	{
+		for ( i = 0; i < KFGRI.PRIArray.Length; i++ )
+		{
+			if ( KFGRI.PRIArray[i] == none || KFGRI.PRIArray[i].bOnlySpectator || KFGRI.PRIArray[i].bReadyToPlay )
+			{
+				continue;
+			}
+
+			PlayerPerk[j].Image = none;
+			ReadyBox[j].Checked(False);
+			ReadyBox[j].SetCaption(Left(KFGRI.PRIArray[i].PlayerName, 20));
+
+			if ( KFPlayerReplicationInfo(KFGRI.PRIArray[i]).ClientVeteranSkill != none )
+			{
+				PlayerVetLabel[j].Caption = LvAbbrString @ KFPlayerReplicationInfo(KFGRI.PRIArray[i]).ClientVeteranSkillLevel @ KFPlayerReplicationInfo(KFGRI.PRIArray[i]).ClientVeteranSkill.default.VeterancyName;
+				PlayerPerk[j].Image = KFPlayerReplicationInfo(KFGRI.PRIArray[i]).ClientVeteranSkill.default.OnHUDIcon;
+			}
+
+			//PlayerBox[j].ImageColor = PlayerBox[j].Default.ImageColor;
+			InList[j] = KFGRI.PRIArray[i];
+			j++;
+			if( j >= 6 )
+			{
+				GoTo'DoneIt';
+			}
+		}
+
+		// Then comes rest.
+		for ( i = 0; i < KFGRI.PRIArray.Length; i++ )
+		{
+			if ( KFGRI.PRIArray[i] == none || KFGRI.PRIArray[i].bOnlySpectator )
+			{
+				Continue;
+			}
+
+			bWasThere = False;
+
+			for ( z = 0; z < j; z++ )
+			{
+				if ( InList[z] == KFGRI.PRIArray[i] )
+				{
+					bWasThere = True;
+					Break;
+				}
+			}
+
+			if ( bWasThere )
+			{
+				Continue;
+			}
+
+			PlayerPerk[j].Image = none;
+			ReadyBox[j].Checked(KFGRI.PRIArray[i].bReadyToPlay);
+			ReadyBox[j].SetCaption(Left(KFGRI.PRIArray[i].PlayerName, 20));
+
+			if ( KFPlayerReplicationInfo(KFGRI.PRIArray[i]).ClientVeteranSkill != none )
+			{
+				PlayerVetLabel[j].Caption = LvAbbrString @ KFPlayerReplicationInfo(KFGRI.PRIArray[i]).ClientVeteranSkillLevel @ KFPlayerReplicationInfo(KFGRI.PRIArray[i]).ClientVeteranSkill.default.VeterancyName;
+				PlayerPerk[j].Image = KFPlayerReplicationInfo(KFGRI.PRIArray[i]).ClientVeteranSkill.default.OnHUDIcon;
+			}
+
+			if ( KFGRI.PRIArray[i].bReadyToPlay )
+			{
+				//PlayerBox[j].ImageColor.R = 200;
+				//PlayerBox[j].ImageColor.G = 75;
+				//PlayerBox[j].ImageColor.B = 75;
+				//PlayerBox[j].ImageColor.A = 200;
+
+				if ( !bTimeoutTimeLogged )
+				{
+					ActivateTimeoutTime = PC.Level.TimeSeconds;
+					bTimeoutTimeLogged = true;
+				}
+			}
+			else
+			{
+				//PlayerBox[j].ImageColor = PlayerBox[j].Default.ImageColor;
+			}
+
+			j++;
+
+			if ( j >= 6 )
+			{
+				Break;
+			}
+		}
+	}
+
+	while( j < 6 )
+	{
+		PlayerPerk[j].Image = none;
+		ReadyBox[j].Checked(False);
+		ReadyBox[j].SetCaption("");
+		PlayerVetLabel[j].Caption = "";
+		//PlayerBox[j].ImageColor = PlayerBox[j].Default.ImageColor;
+		j++;
+	}
+
+DoneIt:
+	StoryString = PC.Level.Description;
+
+	if ( !bStoryBoxFilled )
+	{
+		l_StoryBox.LoadStoryText();
+		bStoryBoxFilled = true;
+	}
+
+	CheckBotButtonAccess();
+
+	// Hate to do it like this, but there's no real easy way to get the SkillLevel strings from the Scoreboard, since it's only ever
+	// called as a class. Spawning a fresh one /w DynamicLoadObject doesn't work too great (online).
+	if ( KFGRI != none )
+	{
+		if ( KFGRI.BaseDifficulty == 1 )
+		{
+			SkillString = BeginnerString;
+		}
+		else if ( KFGRI.BaseDifficulty == 2 )
+		{
+			SkillString = NormalString;
+		}
+		else if ( KFGRI.BaseDifficulty == 4 )
+		{
+			SkillString = HardString;
+		}
+		else if ( KFGRI.BaseDifficulty == 5 )
+		{
+			SkillString = SuicidalString;
+		}
+		else if ( KFGRI.BaseDifficulty == 7 )
+		{
+			SkillString = HellOnEarthString;
+		}
+	}
+
+//	l_TitleBar.Caption = (SkillString@KFGRI.GameName$" on "$PC.Level.Title);
+
+	CurrentMapLabel.Caption = CurrentMapString @ PC.Level.Title;
+	DifficultyLabel.Caption = DifficultyString @ SkillString;
+
+	return false;
+}
+
 function DrawPerk(Canvas Canvas)
 {
 	local float X, Y, Width, Height;
@@ -146,7 +400,7 @@ function DrawPerk(Canvas Canvas)
 
 	// Draw Icon
 	Canvas.SetPos(TempX + IconBorder * Height, TempY + IconBorder * Height);
-	Canvas.DrawTile(class'KFGameType'.default.LoadedSkills[CurIndex].default.OnHUDIcon, IconSize, IconSize, 0, 0, 256, 256);
+	Canvas.DrawTile(class'PerkList'.default.perks[CurIndex].default.OnHUDIcon, IconSize, IconSize, 0, 0, 256, 256);
 
 	TempX += IconSize + (IconToInfoSpacing * Width);
 	TempY += TextTopOffset * Height + ItemBorder * Height;

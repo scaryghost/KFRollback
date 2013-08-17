@@ -23,7 +23,7 @@ function bool OnFooterClick(GUIComponent Sender)
 			{
 				if ( KFPlayerController(PC) != none )
 				{
-					KFPlayerController(PC).SendSelectedVeterancyToServer(true);
+                    PC.ConsoleCommand("mutate perkchange "$KFPlayerController(PC).SelectedVeterancy.default.PerkIndex);
 				}
 
 				//Set Ready
@@ -92,7 +92,7 @@ function bool OnFooterClick(GUIComponent Sender)
 				return false;
 			}
 
-			for ( i = 0; i < class'KFGameType'.default.LoadedSkills.Length; i++ )
+			for ( i = 0; i < class'PerkList'.default.perks.Length; i++ )
 			{
 				if ( KFSteamStatsAndAchievements(PC.SteamStatsAndAchievements).GetPerkProgress(i) < 0.0 )
 				{

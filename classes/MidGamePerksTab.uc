@@ -1,5 +1,27 @@
 class MidGamePerksTab extends KFTab_MidGamePerks;
 
+function bool OnSaveButtonClicked(GUIComponent Sender)
+{
+	local PlayerController PC;
+
+	PC = PlayerOwner();
+
+	class'KFRPlayerController'.default.SelectedVeterancy = class'PerkList'.default.perks[lb_PerkSelect.GetIndex()];
+
+	if ( KFPlayerController(PC) != none )
+	{
+		KFPlayerController(PC).SelectedVeterancy = class'PerkList'.default.perks[lb_PerkSelect.GetIndex()];
+        PC.ConsoleCommand("mutate perkchange "$lb_PerkSelect.GetIndex());
+		PC.SaveConfig();
+	}
+	else
+	{
+		class'KFRPlayerController'.static.StaticSaveConfig();
+	}
+
+	return true;
+}
+
 function OnPerkSelected(GUIComponent Sender)
 {
 	if ( KFStatsAndAchievements.bUsedCheats )

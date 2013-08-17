@@ -2,66 +2,58 @@ class ProfileTab extends KFTab_Profile;
 
 function bool PickModel(GUIComponent Sender)
 {
-	if ( Controller.OpenMenu("KFRollback.ModelSelect", PlayerRec.DefaultName, Eval(Controller.CtrlPressed, PlayerRec.Race, "")) )
-	{
-		Controller.ActivePage.OnClose = ModelSelectClosed;
-	}
+    if ( Controller.OpenMenu("KFRollback.ModelSelect", PlayerRec.DefaultName, Eval(Controller.CtrlPressed, PlayerRec.Race, "")) )
+    {
+        Controller.ActivePage.OnClose = ModelSelectClosed;
+    }
 
-	return true;
+    return true;
 }
 
 function SaveSettings()
 {
-	local PlayerController PC;
+    local PlayerController PC;
 
-	PC = PlayerOwner();
+    PC = PlayerOwner();
 
-	if ( sChar != sCharD )
-	{
-		sCharD = sChar;
-		PC.ConsoleCommand("ChangeCharacter"@sChar);
+    if ( sChar != sCharD )
+    {
+        sCharD = sChar;
+        PC.ConsoleCommand("ChangeCharacter"@sChar);
 
-		if ( !PC.IsA('xPlayer') )
-		{
-			PC.UpdateURL("Character", sChar, True);
-		}
+        if ( !PC.IsA('xPlayer') )
+        {
+            PC.UpdateURL("Character", sChar, True);
+        }
 
-		if ( PlayerRec.Sex ~= "Female" )
-		{
-			PC.UpdateURL("Sex", "F", True);
-		}
-		else
-		{
-			PC.UpdateURL("Sex", "M", True);
-		}
-	}
+        if ( PlayerRec.Sex ~= "Female" )
+        {
+            PC.UpdateURL("Sex", "F", True);
+        }
+        else
+        {
+            PC.UpdateURL("Sex", "M", True);
+        }
+    }
 
-	class'KFRPlayerController'.default.SelectedVeterancy = class'PerkList'.default.perks[lb_PerkSelect.GetIndex()];
+    class'KFRPlayerController'.default.SelectedVeterancy = class'PerkList'.default.perks[lb_PerkSelect.GetIndex()];
 
-	if ( KFRPlayerController(PC) != none )
-	{
-		KFRPlayerController(PC).SelectedVeterancy = class'PerkList'.default.perks[lb_PerkSelect.GetIndex()];
-		KFRPlayerController(PC).SendSelectedVeterancyToServer();
-		PC.SaveConfig();
-	}
-	else
-	{
-		class'KFRPlayerController'.static.StaticSaveConfig();
-	}
+    if ( KFRPlayerController(PC) != none )
+    {
+        KFRPlayerController(PC).SelectedVeterancy = class'PerkList'.default.perks[lb_PerkSelect.GetIndex()];
+        PC.ConsoleCommand("mutate perkchange "$lb_PerkSelect.GetIndex());
+        PC.SaveConfig();
+    }
+    else
+    {
+        class'KFRPlayerController'.static.StaticSaveConfig();
+    }
 }
 
 function OnPerkSelected(GUIComponent Sender)
 {
-	if ( KFStatsAndAchievements.bUsedCheats )
-	{
-		lb_PerkEffects.SetContent(class'LobbyMenu'.default.PerksDisabledString);
-	}
-	else
-	{
-		lb_PerkEffects.SetContent(class'PerkList'.default.perks[lb_PerkSelect.GetIndex()].default.LevelEffects[KFPlayerReplicationInfo(PlayerOwner().PlayerReplicationInfo).ClientVeteranSkillLevel]);
-
-		lb_PerkProgress.List.PerkChanged(KFStatsAndAchievements, lb_PerkSelect.GetIndex());
-	}
+    lb_PerkEffects.SetContent(class'PerkList'.default.perks[lb_PerkSelect.GetIndex()].default.LevelEffects[KFPlayerReplicationInfo(PlayerOwner().PlayerReplicationInfo).ClientVeteranSkillLevel]);
+    lb_PerkProgress.List.PerkChanged(KFStatsAndAchievements, lb_PerkSelect.GetIndex());
 }
 
 defaultproperties {

@@ -13,7 +13,7 @@ function bool InternalOnClick(GUIComponent Sender)
 		{
 				class'KFRPlayerController'.default.SelectedVeterancy = class'PerkList'.default.perks[KFIndexedGUIImage(Sender).Index];
 				KFPlayerController(PC).SelectedVeterancy = class'PerkList'.default.perks[KFIndexedGUIImage(Sender).Index];
-				KFPlayerController(PC).SendSelectedVeterancyToServer();
+                PC.ConsoleCommand("mutate perkchange "$KFIndexedGUIImage(Sender).Index);
 				PC.SaveConfig();
 		}
 		else
