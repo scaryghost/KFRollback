@@ -11,15 +11,15 @@ function bool InternalOnClick(GUIComponent Sender)
 	{
 		if ( KFPlayerController(PC) != none )
 		{
-				class'KFRPlayerController'.default.SelectedVeterancy = class'PerkList'.default.perks[KFIndexedGUIImage(Sender).Index];
+				class'KFPlayerController'.default.SelectedVeterancy = class'PerkList'.default.perks[KFIndexedGUIImage(Sender).Index];
 				KFPlayerController(PC).SelectedVeterancy = class'PerkList'.default.perks[KFIndexedGUIImage(Sender).Index];
                 PC.ConsoleCommand("mutate perkchange "$KFIndexedGUIImage(Sender).Index);
 				PC.SaveConfig();
 		}
 		else
 		{
-			class'KFRPlayerController'.default.SelectedVeterancy = class'PerkList'.default.perks[KFIndexedGUIImage(Sender).Index];
-			class'KFRPlayerController'.static.StaticSaveConfig();
+			class'KFPlayerController'.default.SelectedVeterancy = class'PerkList'.default.perks[KFIndexedGUIImage(Sender).Index];
+			class'KFPlayerController'.static.StaticSaveConfig();
 		}
 		
 		bPerkChange = true;
@@ -103,7 +103,7 @@ function CheckPerks(KFSteamStatsAndAchievements StatsAndAchievements)
 	for ( i = 0; i < MaxPerks; i++ )
 	{
 		if ( (KFPC != none && class'PerkList'.default.perks[i] == KFPC.SelectedVeterancy) ||
-			 (KFPC == none && class'PerkList'.default.perks[i] == class'KFRPlayerController'.default.SelectedVeterancy) )
+			 (KFPC == none && class'PerkList'.default.perks[i] == class'KFPlayerController'.default.SelectedVeterancy) )
 		{
 			CurPerk = i;
 		}

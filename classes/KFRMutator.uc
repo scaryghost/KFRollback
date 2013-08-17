@@ -4,6 +4,17 @@ class KFRMutator extends Mutator
 var() config int perkLevel;
 var localized string perkChangeTraderMsg;
 
+simulated function Tick(float DeltaTime) {
+    local PlayerController localController;
+
+    localController= Level.GetLocalPlayerController();
+    if (localController != none) {
+        localController.Player.InteractionMaster.AddInteraction("KFRollback.KFRInteraction", localController.Player);
+    }
+    Disable('Tick');
+}
+
+
 function PostBeginPlay() {
     if (KFGameType(Level.Game) == none) {
         Destroy();
@@ -11,9 +22,6 @@ function PostBeginPlay() {
     }
 
     AddToPackageMap();
-    Level.Game.PlayerControllerClass= class'KFRollback.KFRPlayerController';
-    Level.Game.PlayerControllerClassName= "KFRollback.KFRPlayerController";
-
     DeathMatch(Level.Game).LoginMenuClass= "KFRollback.KFRInvasionLoginMenu";
     SetTimer(1.0, true);
 }
@@ -22,7 +30,6 @@ function Timer() {
     KFGameType(Level.Game).KFLRules.destroy();
     KFGameType(Level.Game).KFLRules= spawn(class'KFRLevelRules');
     SetTimer(0.0, false);
-    log("I have replaced your level rules!");
 }
 
 function bool CheckReplacement(Actor Other, out byte bSuperRelevant) {
@@ -92,4 +99,7 @@ defaultproperties {
     Description="Rolls back the game to 2009, mixing parts of the Level Up and Heavy Metal updates"
 
     perkChangeTraderMsg="You can only change perks during trader time"
+
+    RemoteRole= ROLE_SimulatedProxy
+    bAlwaysRelevant= true
 }

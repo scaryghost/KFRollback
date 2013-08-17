@@ -6,7 +6,7 @@ function bool OnSaveButtonClicked(GUIComponent Sender)
 
 	PC = PlayerOwner();
 
-	class'KFRPlayerController'.default.SelectedVeterancy = class'PerkList'.default.perks[lb_PerkSelect.GetIndex()];
+	class'KFPlayerController'.default.SelectedVeterancy = class'PerkList'.default.perks[lb_PerkSelect.GetIndex()];
 
 	if ( KFPlayerController(PC) != none )
 	{
@@ -16,7 +16,7 @@ function bool OnSaveButtonClicked(GUIComponent Sender)
 	}
 	else
 	{
-		class'KFRPlayerController'.static.StaticSaveConfig();
+		class'KFPlayerController'.static.StaticSaveConfig();
 	}
 
 	return true;
@@ -24,16 +24,8 @@ function bool OnSaveButtonClicked(GUIComponent Sender)
 
 function OnPerkSelected(GUIComponent Sender)
 {
-	if ( KFStatsAndAchievements.bUsedCheats )
-	{
-		lb_PerkEffects.SetContent(class'LobbyMenu'.default.PerksDisabledString);
-	}
-	else
-	{
-        lb_PerkEffects.SetContent(class'PerkList'.default.perks[lb_PerkSelect.GetIndex()].default.LevelEffects[KFPlayerReplicationInfo(PlayerOwner().PlayerReplicationInfo).ClientVeteranSkillLevel]);
-
-		lb_PerkProgress.List.PerkChanged(KFStatsAndAchievements, lb_PerkSelect.GetIndex());
-	}
+    lb_PerkEffects.SetContent(class'PerkList'.default.perks[lb_PerkSelect.GetIndex()].default.LevelEffects[KFPlayerReplicationInfo(PlayerOwner().PlayerReplicationInfo).ClientVeteranSkillLevel]);
+    lb_PerkProgress.List.PerkChanged(KFStatsAndAchievements, lb_PerkSelect.GetIndex());
 }
 
 defaultproperties {

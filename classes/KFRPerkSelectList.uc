@@ -3,10 +3,10 @@ class KFRPerkSelectList extends KFPerkSelectList;
 function InitList(KFSteamStatsAndAchievements StatsAndAchievements)
 {
 	local int i;
-	local KFRPlayerController KFPC;
+	local KFPlayerController KFPC;
 
 	// Grab the Player Controller for later use
-	KFPC = KFRPlayerController(PlayerOwner());
+	KFPC = KFPlayerController(PlayerOwner());
 
 	// Hold onto our reference
 	KFStatsAndAchievements = StatsAndAchievements;
@@ -23,10 +23,11 @@ function InitList(KFSteamStatsAndAchievements StatsAndAchievements)
 	{
 		PerkName[PerkName.Length] = class'PerkList'.default.perks[i].default.VeterancyName;
 		PerkLevelString[PerkLevelString.Length] = LvAbbrString @ KFPlayerReplicationInfo(KFPC.PlayerReplicationInfo).ClientVeteranSkillLevel;
+        log("What is my perk level?"@KFPlayerReplicationInfo(KFPC.PlayerReplicationInfo).ClientVeteranSkillLevel);
 		PerkProgress[PerkProgress.Length] = 0;
 
 		if ( (KFPC != none && class'PerkList'.default.perks[i] == KFPC.SelectedVeterancy) ||
-			 (KFPC == none && class'PerkList'.default.perks[i] == class'KFRPlayerController'.default.SelectedVeterancy) )
+			 (KFPC == none && class'PerkList'.default.perks[i] == class'KFPlayerController'.default.SelectedVeterancy) )
 		{
 			SetIndex(i);
 		}

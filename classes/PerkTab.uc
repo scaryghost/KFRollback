@@ -14,7 +14,7 @@ function bool OnSaveButtonClicked(GUIComponent Sender)
 		}
 		else
 		{
-			class'KFRPlayerController'.default.SelectedVeterancy = class'PerkList'.default.perks[lb_PerkSelect.GetIndex()];
+			class'KFPlayerController'.default.SelectedVeterancy = class'PerkList'.default.perks[lb_PerkSelect.GetIndex()];
 			KFPlayerController(PC).SelectedVeterancy = class'PerkList'.default.perks[lb_PerkSelect.GetIndex()];
             PC.ConsoleCommand("mutate perkchange "$lb_PerkSelect.GetIndex());
 			PC.SaveConfig();
@@ -22,8 +22,8 @@ function bool OnSaveButtonClicked(GUIComponent Sender)
 	}
 	else
 	{
-		class'KFRPlayerController'.default.SelectedVeterancy = class'PerkList'.default.perks[lb_PerkSelect.GetIndex()];
-		class'KFRPlayerController'.static.StaticSaveConfig();
+		class'KFPlayerController'.default.SelectedVeterancy = class'PerkList'.default.perks[lb_PerkSelect.GetIndex()];
+		class'KFPlayerController'.static.StaticSaveConfig();
 	}
 
 	return true;
