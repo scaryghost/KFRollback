@@ -1,18 +1,14 @@
 class KFRInteraction extends Interaction;
 
-var string buyMenuClass;
-var class<KFVeterancyTypes> savedPerk;
+var string buyMenuClass, lobbyMenuClass;
 
 event NotifyLevelChange() {
     Master.RemoveInteraction(self);
-    KFPlayerController(ViewportOwner.Actor).SelectedVeterancy= savedPerk;
-    ViewportOwner.Actor.SaveConfig();
 }
 
 function Tick (float DeltaTime) {
     if (LobbyMenu(KFGUIController(ViewportOwner.GUIController).ActivePage) != none) {
-        savedPerk= KFPlayerController(ViewportOwner.Actor).SelectedVeterancy;
-        KFPlayerController(ViewportOwner.Actor).LobbyMenuClassString= "KFRollback.KFRLobbyMenu";
+        KFPlayerController(ViewportOwner.Actor).LobbyMenuClassString= lobbyMenuClass;
         ViewportOwner.Actor.ClientCloseMenu(true, true);
         KFPlayerController(ViewportOwner.Actor).ShowLobbyMenu();
         bRequiresTick= false;
@@ -42,6 +38,8 @@ function bool KeyEvent(EInputKey Key, EInputAction Action, float Delta ) {
 defaultproperties {
     bActive= true
     bRequiresTick= true
+
     buyMenuClass="KFRollback.BuyMenu"
+    lobbyMenuClass="KFRollback.KFRLobbyMenu"
 }
 
