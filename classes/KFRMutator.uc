@@ -2,7 +2,10 @@ class KFRMutator extends Mutator
     config(KFRollBack);
 
 var() config int perkLevel;
+var() config bool enableKatana, enableAK;
+
 var localized string perkChangeTraderMsg;
+var class<KFLevelRules> levelRules;
 
 simulated function Tick(float DeltaTime) {
     local PlayerController localController;
@@ -23,12 +26,30 @@ function PostBeginPlay() {
 
     AddToPackageMap();
     DeathMatch(Level.Game).LoginMenuClass= "KFRollback.KFRInvasionLoginMenu";
+
+    //Should find a better way to do this than create 4 level rules classes, but lazy
+    if (enableKatana && enableAK) {
+        levelRules= class'KFRLevelRules';
+    } else if (enableKatana && !enableAK) {
+        levelRules= class'KFRLevelRules_NoAK';
+    } else if (!enableKatana && enableAK) {
+        levelRules= class'KFRLevelRules_NoKatana';
+    } else if (!enableKatana && !enableAK) {
+        levelRules= class'KFRLevelRules_NoAK_NoKatana';
+    }
+
+    if (perkLevel < 0) {
+        perkLevel= 0;
+    } else if (perkLevel > 5) {
+        perkLevel= 5;
+    }
+
     SetTimer(1.0, true);
 }
 
 function Timer() {
     KFGameType(Level.Game).KFLRules.destroy();
-    KFGameType(Level.Game).KFLRules= spawn(class'KFRLevelRules');
+    KFGameType(Level.Game).KFLRules= spawn(levelRules);
     SetTimer(0.0, false);
 }
 
@@ -86,12 +107,18 @@ static function FillPlayInfo(PlayInfo PlayInfo) {
     super.FillPlayInfo(PlayInfo);
 
     PlayInfo.AddSetting("KFRollback", "perkLevel","Perk Level", 0, 1, "Text", "0.1;0:5");
+    PlayInfo.AddSetting("KFRollback", "enableKatana","Enable Katana", 0, 1, "Check");
+    PlayInfo.AddSetting("KFRollback", "enableAK","Enable AK47", 0, 1, "Check");
 }
 
 static event string GetDescriptionText(string property) {
     switch(property) {
         case "perkLevel":
             return "Sets the perk level for the players";
+        case "enableKatana":
+            return "Add the katana to the trader menu";
+        case "enableAK":
+            return "Add the AK47 to the trader menu";
         default:
             return Super.GetDescriptionText(property);
     }
@@ -101,7 +128,7 @@ static event string GetDescriptionText(string property) {
 defaultproperties {
     GroupName="KFRollback"
     FriendlyName="KF Rollback"
-    Description="Rolls back the game to 2009, mixing parts of the Level Up and Heavy Metal updates"
+    Description="Rolls back the game to 2009, mixing in bits of the Level Up, Heavy Metal, and 2010 Xmas updates"
 
     perkChangeTraderMsg="You can only change perks during trader time"
 
