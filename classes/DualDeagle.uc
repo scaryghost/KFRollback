@@ -23,8 +23,7 @@ function GiveTo(pawn Other, optional Pickup Pickup) {
         if (Deagle(I) != none) {
             if(WeaponPickup(Pickup)!= none) {
                 WeaponPickup(Pickup).AmmoAmount[0] += Weapon(I).AmmoAmount(0);
-            }
-            else {
+            } else {
                 OldAmmo = Weapon(I).AmmoAmount(0);
                 bNoPickup = true;
             }
@@ -38,39 +37,34 @@ function GiveTo(pawn Other, optional Pickup Pickup) {
         }
     }
 
-    if ( KFWeaponPickup(Pickup) != None && Pickup.bDropped )
-    {
-        MagAmmoRemaining = Clamp(MagAmmoRemaining + KFWeaponPickup(Pickup).MagAmmoRemaining, 0, MagCapacity);
+    if (KFWeaponPickup(Pickup) != None && Pickup.bDropped) {
+        MagAmmoRemaining= Clamp(MagAmmoRemaining + KFWeaponPickup(Pickup).MagAmmoRemaining, 0, MagCapacity);
     }
-    else
-    {
-        MagAmmoRemaining = Clamp(MagAmmoRemaining + Class'KFRollback.Deagle'.Default.MagCapacity, 0, MagCapacity);
+    else {
+        MagAmmoRemaining= Clamp(MagAmmoRemaining + Class'KFRollback.Deagle'.Default.MagCapacity, 0, MagCapacity);
     }
 
     Super(Weapon).GiveTo(Other, Pickup);
 
-    if ( bNoPickup )
-    {
+    if (bNoPickup) {
         AddAmmo(OldAmmo, 0);
         Clamp(Ammo[0].AmmoAmount, 0, MaxAmmo(0));
     }
 }
 
-function DropFrom(vector StartLocation)
-{
+function DropFrom(vector StartLocation) {
     local int m;
     local Pickup Pickup;
     local Inventory I;
     local int AmmoThrown, OtherAmmo;
 
-    if( !bCanThrow )
+    if (!bCanThrow)
         return;
 
     AmmoThrown = AmmoAmount(0);
     ClientWeaponThrown();
 
-    for (m = 0; m < NUM_FIRE_MODES; m++)
-    {
+    for (m = 0; m < NUM_FIRE_MODES; m++) {
         if (FireMode[m].bIsFiring)
             StopFire(m);
     }
@@ -78,8 +72,7 @@ function DropFrom(vector StartLocation)
     if ( Instigator != None )
         DetachFromPawn(Instigator);
 
-    if( Instigator.Health > 0 )
-    {
+    if (Instigator.Health > 0) {
         OtherAmmo = AmmoThrown / 2;
         AmmoThrown -= OtherAmmo;
         I = Spawn(Class'KFRollback.Deagle');
@@ -89,10 +82,9 @@ function DropFrom(vector StartLocation)
         MagAmmoRemaining = Max(MagAmmoRemaining-Deagle(I).MagAmmoRemaining,0);
     }
 
-    Pickup = Spawn(Class'KFRollback.DeaglePickup',,, StartLocation);
+    Pickup= Spawn(Class'KFRollback.DeaglePickup',,, StartLocation);
 
-    if ( Pickup != None )
-    {
+    if (Pickup != None) {
         Pickup.InitDroppedPickupFor(self);
         Pickup.Velocity = Velocity;
         WeaponPickup(Pickup).AmmoAmount[0] = AmmoThrown;
@@ -106,10 +98,8 @@ function DropFrom(vector StartLocation)
     Destroy();
 }
 
-simulated function bool PutDown()
-{
-    if ( Instigator.PendingWeapon.class == class'KFRollback.Deagle' )
-    {
+simulated function bool PutDown() {
+    if (Instigator.PendingWeapon.class == class'KFRollback.Deagle') {
         bIsReloading = false;
     }
 
