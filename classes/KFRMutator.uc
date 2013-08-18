@@ -35,6 +35,9 @@ function Timer() {
 function bool CheckReplacement(Actor Other, out byte bSuperRelevant) {
     if (KFPlayerReplicationInfo(Other) != none) {
         KFPlayerReplicationInfo(Other).ClientVeteranSkillLevel= perkLevel;
+    } else if (Other.class != class'KFMod.Knife') {
+        Knife(Other).FireModeClass[0]=class'KFRollback.KnifeFire';
+        Knife(Other).FireModeClass[1]=class'KFRollback.KnifeAltFire';
     }
     return super.CheckReplacement(Other, bSuperRelevant);
 }
