@@ -8,7 +8,6 @@ function bool InternalOnClick(GUIComponent Sender) {
     if (Sender.IsA('KFIndexedGUIImage') && !KFPlayerController(PC).bChangedVeterancyThisWave) {
         KFPlayerController(PC).SelectedVeterancy = class'PerkList'.default.perks[KFIndexedGUIImage(Sender).Index];
         PC.ConsoleCommand("mutate perkchange "$KFIndexedGUIImage(Sender).Index);
-        PC.SaveConfig();
         bPerkChange = true;
     }
     

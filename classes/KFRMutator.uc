@@ -74,7 +74,6 @@ function Mutate(string Command, PlayerController Sender) {
             } else {
                 Sender.ClientMessage(kfPC.PerkChangeOncePerWaveString);
             }
-            Sender.SaveConfig();
         }
     }    
     super.Mutate(Command, Sender);

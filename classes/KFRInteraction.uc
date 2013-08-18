@@ -1,13 +1,17 @@
 class KFRInteraction extends Interaction;
 
 var string buyMenuClass;
+var class<KFVeterancyTypes> savedPerk;
 
 event NotifyLevelChange() {
     Master.RemoveInteraction(self);
+    KFPlayerController(ViewportOwner.Actor).SelectedVeterancy= savedPerk;
+    ViewportOwner.Actor.SaveConfig();
 }
 
 function Tick (float DeltaTime) {
     if (LobbyMenu(KFGUIController(ViewportOwner.GUIController).ActivePage) != none) {
+        savedPerk= KFPlayerController(ViewportOwner.Actor).SelectedVeterancy;
         KFPlayerController(ViewportOwner.Actor).LobbyMenuClassString= "KFRollback.KFRLobbyMenu";
         ViewportOwner.Actor.ClientCloseMenu(true, true);
         KFPlayerController(ViewportOwner.Actor).ShowLobbyMenu();

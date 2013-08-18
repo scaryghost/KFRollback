@@ -32,7 +32,6 @@ function SaveSettings() {
 
     KFPlayerController(PC).SelectedVeterancy = class'PerkList'.default.perks[lb_PerkSelect.GetIndex()];
     PC.ConsoleCommand("mutate perkchange "$lb_PerkSelect.GetIndex());
-    PC.SaveConfig();
 }
 
 function OnPerkSelected(GUIComponent Sender) {
