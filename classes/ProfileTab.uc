@@ -1,5 +1,7 @@
 class ProfileTab extends KFTab_Profile;
 
+var string modelSelectClass;
+
 function ShowPanel(bool bShow) {
     if (bShow) {
         if (bInit) {
@@ -19,7 +21,7 @@ function ShowPanel(bool bShow) {
     SetVisibility(bShow);
 }
 function bool PickModel(GUIComponent Sender) {
-    if (Controller.OpenMenu("KFRollback.ModelSelect", PlayerRec.DefaultName, Eval(Controller.CtrlPressed, PlayerRec.Race, ""))) {
+    if (Controller.OpenMenu(modelSelectClass, PlayerRec.DefaultName, Eval(Controller.CtrlPressed, PlayerRec.Race, ""))) {
         Controller.ActivePage.OnClose = ModelSelectClosed;
     }
 
@@ -58,6 +60,8 @@ function OnPerkSelected(GUIComponent Sender) {
 }
 
 defaultproperties {
+    modelSelectClass="KFRollback.ModelSelect"
+
     Begin Object Class=KFPerkSelectListBox Name=PerkSelectList
         OnCreateComponent=PerkSelectList.InternalOnCreateComponent
         WinTop=0.082969

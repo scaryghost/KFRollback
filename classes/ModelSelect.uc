@@ -2,15 +2,6 @@ class ModelSelect extends KFModelSelect;
 
 var array<string> allowedCharacters;
 
-function InitComponent(GUIController MyController, GUIComponent MyOwner) {
-    local int i;
-    super.InitComponent(MyController, MyOwner);
-
-    for(i= 0; i < PlayerList.Length; i++) {
-        log("My character!"@PlayerList[i].Menu);
-    }
-}
-
 function RefreshCharacterList(string ExcludedChars, optional string Race) {
     local int i, j, len;
     local array<string> Excluded;

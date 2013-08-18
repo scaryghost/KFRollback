@@ -6,13 +6,14 @@ var() config bool enableKatana, enableAK;
 
 var localized string perkChangeTraderMsg;
 var class<KFLevelRules> levelRules;
+var string interactionClass, loginMenuClass;
 
 simulated function Tick(float DeltaTime) {
     local PlayerController localController;
 
     localController= Level.GetLocalPlayerController();
     if (localController != none) {
-        localController.Player.InteractionMaster.AddInteraction("KFRollback.KFRInteraction", localController.Player);
+        localController.Player.InteractionMaster.AddInteraction(interactionClass, localController.Player);
     }
     Disable('Tick');
 }
@@ -25,7 +26,7 @@ function PostBeginPlay() {
     }
 
     AddToPackageMap();
-    DeathMatch(Level.Game).LoginMenuClass= "KFRollback.KFRInvasionLoginMenu";
+    DeathMatch(Level.Game).LoginMenuClass= loginMenuClass;
 
     //Should find a better way to do this than create 4 level rules classes, but lazy
     if (enableKatana && enableAK) {
@@ -131,6 +132,8 @@ defaultproperties {
     Description="Rolls back the game to 2009, mixing in bits of the Level Up, Heavy Metal, and 2010 Xmas updates"
 
     perkChangeTraderMsg="You can only change perks during trader time"
+    interactionClass="KFRollback.KFRInteraction"
+    loginMenuClass="KFRollback.KFRInvasionLoginMenu"
 
     RemoteRole= ROLE_SimulatedProxy
     bAlwaysRelevant= true
