@@ -1,6 +1,6 @@
 class LAWPickup extends KFMod.LAWPickup;
 
 defaultproperties {
-    CorrespondingPerkIndex=7
+    CorrespondingPerkIndex=1
     InventoryType=class'KFRollback.LAW'
 }
