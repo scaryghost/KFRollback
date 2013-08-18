@@ -1,4 +1,4 @@
-class KFRVetSharpshooter extends KFVetSharpshooter
+class VetSharpshooter extends KFVetSharpshooter
     abstract;
 
 // Change the cost of particular items

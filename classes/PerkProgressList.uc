@@ -1,4 +1,4 @@
-class KFRPerkProgressList extends KFPerkProgressList;
+class PerkProgressList extends KFPerkProgressList;
 
 function PerkChanged(KFSteamStatsAndAchievements KFStatsAndAchievements, int NewPerkIndex) {
     RequirementString.Length= 0;

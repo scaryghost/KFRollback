@@ -30,13 +30,13 @@ function PostBeginPlay() {
 
     //Should find a better way to do this than create 4 level rules classes, but lazy
     if (enableKatana && enableAK) {
-        levelRules= class'KFRLevelRules';
+        levelRules= class'LevelRules';
     } else if (enableKatana && !enableAK) {
-        levelRules= class'KFRLevelRules_NoAK';
+        levelRules= class'LevelRules_NoAK';
     } else if (!enableKatana && enableAK) {
-        levelRules= class'KFRLevelRules_NoKatana';
+        levelRules= class'LevelRules_NoKatana';
     } else if (!enableKatana && !enableAK) {
-        levelRules= class'KFRLevelRules_NoAK_NoKatana';
+        levelRules= class'LevelRules_NoAK_NoKatana';
     }
 
     if (perkLevel < 0) {
@@ -57,7 +57,7 @@ function Timer() {
 function bool CheckReplacement(Actor Other, out byte bSuperRelevant) {
     if (KFPlayerReplicationInfo(Other) != none) {
         KFPlayerReplicationInfo(Other).ClientVeteranSkillLevel= perkLevel;
-    } else if (Other.class != class'KFMod.Knife') {
+    } else if (Knife(Other) != none) {
         Knife(Other).FireModeClass[0]=class'KFRollback.KnifeFire';
         Knife(Other).FireModeClass[1]=class'KFRollback.KnifeAltFire';
     }
@@ -133,7 +133,7 @@ defaultproperties {
 
     perkChangeTraderMsg="You can only change perks during trader time"
     interactionClass="KFRollback.KFRInteraction"
-    loginMenuClass="KFRollback.KFRInvasionLoginMenu"
+    loginMenuClass="KFRollback.InvasionLoginMenu"
 
     RemoteRole= ROLE_SimulatedProxy
     bAlwaysRelevant= true

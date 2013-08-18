@@ -1,4 +1,4 @@
-class KFRVetSupportSpec extends KFVetSupportSpec
+class VetSupportSpec extends KFVetSupportSpec
 	abstract;
 
 defaultproperties {

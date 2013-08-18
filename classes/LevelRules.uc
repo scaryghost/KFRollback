@@ -1,4 +1,4 @@
-class KFRLevelRules extends KFLevelRules;
+class LevelRules extends KFLevelRules;
 
 simulated function PostBeginPlay() {
     local int i;

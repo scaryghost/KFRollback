@@ -1,4 +1,4 @@
-class KFRLobbyMenu extends LobbyMenu;
+class LobbyMenu extends KFGui.LobbyMenu;
 
 var localized string modInfoText;
 var bool drawn;
@@ -300,16 +300,16 @@ function DrawPerk(Canvas Canvas) {
 
 defaultproperties {
     modInfoText="KFRollback Mutator||If you cannot select a perk, type in console:|'mutate perkchange $index', where index=[0,5]"
-    profilePage="KFRollback.KFRProfilePage"
+    profilePage="KFRollback.ProfilePage"
 
-    Begin Object Class=KFRLobbyFooter Name=Footer
+    Begin Object Class=KFRollback.LobbyFooter Name=Footer
         RenderWeight=0.300000
         TabOrder=8
         bBoundToParent=False
         bScaleToParent=False
         OnPreDraw=BuyFooter.InternalOnPreDraw
     End Object
-    t_Footer=LobbyFooter'KFRollback.KFRLobbyMenu.Footer'
+    t_Footer=Footer
 
 	Begin Object Class=GUIScrollTextBox Name=ModInfo
 		WinWidth=0.312375
@@ -321,5 +321,5 @@ defaultproperties {
 		TabOrder=9
 		StyleName="NoBackground"
 	End Object
-	modInfoTextBox=GUIScrollTextBox'KFRollback.KFRLobbyMenu.ModInfo'
+	modInfoTextBox=ModInfo
 }

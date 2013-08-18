@@ -7,7 +7,7 @@ event NotifyLevelChange() {
 }
 
 function Tick (float DeltaTime) {
-    if (LobbyMenu(KFGUIController(ViewportOwner.GUIController).ActivePage) != none) {
+    if (KFGUIController(ViewportOwner.GUIController).ActivePage.class == class'KFGui.LobbyMenu') {
         KFPlayerController(ViewportOwner.Actor).LobbyMenuClassString= lobbyMenuClass;
         ViewportOwner.Actor.ClientCloseMenu(true, true);
         KFPlayerController(ViewportOwner.Actor).ShowLobbyMenu();
@@ -40,6 +40,6 @@ defaultproperties {
     bRequiresTick= true
 
     buyMenuClass="KFRollback.BuyMenu"
-    lobbyMenuClass="KFRollback.KFRLobbyMenu"
+    lobbyMenuClass="KFRollback.LobbyMenu"
 }
 

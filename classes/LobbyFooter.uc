@@ -1,4 +1,4 @@
-class KFRLobbyFooter extends LobbyFooter;
+class LobbyFooter extends KFGui.LobbyFooter;
 
 function bool OnFooterClick(GUIComponent Sender) {
     local GUIController C;
@@ -42,7 +42,7 @@ function bool OnFooterClick(GUIComponent Sender) {
             GUIQuestionPage(Controller.TopPage()).SetupQuestion(class'KFMainMenu'.default.SteamMustBeRunningText, QBTN_Ok, QBTN_Ok);
             return false;
         } else {
-            PC.ClientOpenMenu(class'KFRLobbyMenu'.default.profilePage, false);
+            PC.ClientOpenMenu(class'LobbyMenu'.default.profilePage, false);
         }
     }
 

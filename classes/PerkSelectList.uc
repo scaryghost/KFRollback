@@ -1,4 +1,4 @@
-class KFRPerkSelectList extends KFPerkSelectList;
+class PerkSelectList extends KFPerkSelectList;
 
 function InitList(KFSteamStatsAndAchievements StatsAndAchievements) {
     local int i;

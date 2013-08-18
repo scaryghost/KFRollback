@@ -1,4 +1,4 @@
-class KFRVetFieldMedic extends KFVetFieldMedic
+class VetFieldMedic extends KFVetFieldMedic
     abstract;
 
 static function float GetMovementSpeedModifier(KFPlayerReplicationInfo KFPRI, KFGameReplicationInfo KFGRI) {

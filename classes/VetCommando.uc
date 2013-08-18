@@ -1,4 +1,4 @@
-class KFRVetCommando extends KFVetCommando
+class VetCommando extends KFVetCommando
     abstract;
 
 // Change the cost of particular items

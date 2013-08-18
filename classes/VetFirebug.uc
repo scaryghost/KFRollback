@@ -1,4 +1,4 @@
-class KFRVetFirebug extends KFVetFirebug
+class VetFirebug extends KFVetFirebug
     abstract;
 
 defaultproperties {

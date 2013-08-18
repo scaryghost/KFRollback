@@ -1,9 +1,9 @@
-class KFRLevelRules_NoAK extends KFLevelRules;
+class LevelRules_NoAK_NoKatana extends KFLevelRules;
 
 simulated function PostBeginPlay() {
     local int i;
 
-    for(i= 16; i < MAX_BUYITEMS; i++) {
+    for(i= 15; i < MAX_BUYITEMS; i++) {
         ItemForSale[i]= none;
     }
 }
@@ -22,8 +22,7 @@ defaultproperties {
     ItemForSale(10)=Class'KFMod.KnifePickup'
     ItemForSale(11)=Class'KFRollback.MachetePickup'
     ItemForSale(12)=Class'KFRollback.AxePickup'
-    ItemForSale(13)=Class'KFRollback.KatanaPickup'
-    ItemForSale(14)=Class'KFRollback.ChainsawPickup'
-    ItemForSale(15)=Class'KFMod.FlameThrowerPickup'
+    ItemForSale(13)=Class'KFRollback.ChainsawPickup'
+    ItemForSale(14)=Class'KFMod.FlameThrowerPickup'
 }
 

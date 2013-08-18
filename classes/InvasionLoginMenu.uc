@@ -1,4 +1,4 @@
-class KFRInvasionLoginMenu extends KFInvasionLoginMenu;
+class InvasionLoginMenu extends KFInvasionLoginMenu;
 
 function InitComponent(GUIController MyController, GUIComponent MyComponent) {
     super(UT2k4PlayerLoginMenu).InitComponent(MyController, MyComponent);

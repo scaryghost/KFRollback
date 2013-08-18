@@ -62,23 +62,23 @@ function OnPerkSelected(GUIComponent Sender) {
 defaultproperties {
     modelSelectClass="KFRollback.ModelSelect"
 
-    Begin Object Class=KFPerkSelectListBox Name=PerkSelectList
-        OnCreateComponent=PerkSelectList.InternalOnCreateComponent
+    Begin Object Class=KFPerkSelectListBox Name=PerkSelectBox
+        OnCreateComponent=PerkSelectBox.InternalOnCreateComponent
         WinTop=0.082969
         WinLeft=0.323418
         WinWidth=0.318980
         WinHeight=0.654653
-        DefaultListClass="KFRollback.KFRPerkSelectList"
+        DefaultListClass="KFRollback.PerkSelectList"
     End Object
-    lb_PerkSelect=KFPerkSelectListBox'KFRollback.ProfileTab.PerkSelectList'
+    lb_PerkSelect=PerkSelectBox
 
-    Begin Object Class=KFPerkProgressListBox Name=PerkProgressList
-        OnCreateComponent=PerkProgressList.InternalOnCreateComponent
+    Begin Object Class=KFPerkProgressListBox Name=PerkProgressBox
+        OnCreateComponent=PerkProgressBox.InternalOnCreateComponent
         WinTop=0.439668
         WinLeft=0.670121
         WinWidth=0.319980
         WinHeight=0.292235
-        DefaultListClass="KFRollback.KFRPerkProgressList"
+        DefaultListClass="KFRollback.PerkProgressList"
     End Object
-    lb_PerkProgress=KFPerkProgressListBox'KFRollback.ProfileTab.PerkProgressList'
+    lb_PerkProgress=PerkProgressBox
 }

@@ -1,4 +1,4 @@
-class KFRVetBerserker extends KFVetBerserker
+class VetBerserker extends KFVetBerserker
     abstract;
 
 var array<float> bloatDamageScale, damageScale;
