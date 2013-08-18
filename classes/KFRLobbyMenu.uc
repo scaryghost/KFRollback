@@ -70,7 +70,7 @@ function bool InternalOnPreDraw(Canvas C) {
     local KFGameReplicationInfo KFGRI;
     local PlayerController PC;
     local PlayerReplicationInfo InList[6];
-    local bool bWasThere, bShowProfilePage;
+    local bool bWasThere;
 
     PC = PlayerOwner();
 
@@ -97,50 +97,9 @@ function bool InternalOnPreDraw(Canvas C) {
 
     if (KFPlayerController(PC) != none && bShouldUpdateVeterancy) {
         if (KFPlayerController(PC).SelectedVeterancy == none) {
-            bShowProfilePage = true;
-
-            if (PC.SteamStatsAndAchievements == none) {
-                if (PC.Level.NetMode != NM_Client) {
-                    PC.SteamStatsAndAchievements = PC.Spawn(PC.default.SteamStatsAndAchievementsClass, PC);
-                    if (!PC.SteamStatsAndAchievements.Initialize(PC)) {
-                        Controller.OpenMenu(Controller.QuestionMenuClass);
-                        GUIQuestionPage(Controller.TopPage()).SetupQuestion(class'KFMainMenu'.default.UnknownSteamErrorText, QBTN_Ok, QBTN_Ok);
-                        PC.SteamStatsAndAchievements.Destroy();
-                        PC.SteamStatsAndAchievements = none;
-                    }
-                    else {
-                        PC.SteamStatsAndAchievements.OnDataInitialized = OnSteamStatsAndAchievementsReady;
-                    }
-                }
-
-                bShowProfilePage = false;
-            }
-            else if (!PC.SteamStatsAndAchievements.bInitialized) {
-                PC.SteamStatsAndAchievements.OnDataInitialized = OnSteamStatsAndAchievementsReady;
-                PC.SteamStatsAndAchievements.GetStatsAndAchievements();
-                bShowProfilePage = false;
-            }
-
-            if (KFSteamStatsAndAchievements(PC.SteamStatsAndAchievements) != none) {
-                for (i = 0; i < class'KFGameType'.default.LoadedSkills.Length; i++) {
-                    if (KFSteamStatsAndAchievements(PC.SteamStatsAndAchievements).GetPerkProgress(i) < 0.0) {
-                        PC.SteamStatsAndAchievements.OnDataInitialized = OnSteamStatsAndAchievementsReady;
-                        PC.SteamStatsAndAchievements.GetStatsAndAchievements();
-                        bShowProfilePage = false;
-                    }
-                }
-            }
-
-            if (bShowProfilePage) {
-                OnSteamStatsAndAchievementsReady();
-            }
-
-            bShouldUpdateVeterancy = false;
-        }
-        else if (PC.SteamStatsAndAchievements != none && PC.SteamStatsAndAchievements.bInitialized) {
             PC.ConsoleCommand("mutate perkchange "$KFPlayerController(PC).SelectedVeterancy.default.PerkIndex);
-            bShouldUpdateVeterancy = false;
         }
+        bShouldUpdateVeterancy = false;
     }
 
     // First fill in non-ready players.
@@ -231,17 +190,13 @@ DoneIt:
     if (KFGRI != none) {
         if (KFGRI.BaseDifficulty == 1) {
             SkillString = BeginnerString;
-        }
-        else if (KFGRI.BaseDifficulty == 2) {
+        } else if (KFGRI.BaseDifficulty == 2) {
             SkillString = NormalString;
-        }
-        else if (KFGRI.BaseDifficulty == 4) {
+        } else if (KFGRI.BaseDifficulty == 4) {
             SkillString = HardString;
-        }
-        else if (KFGRI.BaseDifficulty == 5) {
+        } else if (KFGRI.BaseDifficulty == 5) {
             SkillString = SuicidalString;
-        }
-        else if (KFGRI.BaseDifficulty == 7) {
+        } else if (KFGRI.BaseDifficulty == 7) {
             SkillString = HellOnEarthString;
         }
     }
@@ -265,10 +220,6 @@ function DrawPerk(Canvas Canvas) {
     if (!drawn) {
         modInfoTextBox.SetContent(modInfoText);
         drawn= true;
-    }
-    if ( KFPlayerController(PlayerOwner()) == none || KFPlayerController(PlayerOwner()).SelectedVeterancy == none ||
-         KFSteamStatsAndAchievements(PlayerOwner().SteamStatsAndAchievements) == none ) {
-        return;
     }
 
     CurIndex= KFPlayerController(PlayerOwner()).SelectedVeterancy.default.PerkIndex;
@@ -339,13 +290,7 @@ function DrawPerk(Canvas Canvas) {
     Canvas.SetPos(TempX + 3.0, TempY + 3.0);
     Canvas.DrawTileStretched(ProgressBarForeground, (ProgressBarWidth - 6.0) * PerkProgress, (ProgressBarHeight * Height) - 6.0);
 
-    if (PlayerOwner().SteamStatsAndAchievements.bUsedCheats) {
-        if (CurrentVeterancyLevel != 255) {
-            lb_PerkEffects.SetContent(PerksDisabledString);
-            CurrentVeterancyLevel = 255;
-        }
-    }
-    else if (CurrentVeterancy != KFPlayerController(PlayerOwner()).SelectedVeterancy || CurrentVeterancyLevel != LevelIndex) {
+    if (CurrentVeterancy != KFPlayerController(PlayerOwner()).SelectedVeterancy || CurrentVeterancyLevel != LevelIndex) {
         lb_PerkEffects.SetContent(KFPlayerController(PlayerOwner()).SelectedVeterancy.default.LevelEffects[LevelIndex]);
         CurrentVeterancy = KFPlayerController(PlayerOwner()).SelectedVeterancy;
         CurrentVeterancyLevel = LevelIndex;

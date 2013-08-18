@@ -1,5 +1,15 @@
 class MidGamePerksTab extends KFTab_MidGamePerks;
 
+function ShowPanel(bool bShow) {
+    super.ShowPanel(bShow);
+
+    if (bShow && PlayerOwner() != none) {
+        lb_PerkSelect.List.InitList(KFStatsAndAchievements);
+        lb_PerkProgress.List.InitList();
+        InitGRI();
+    }
+}
+
 function bool OnSaveButtonClicked(GUIComponent Sender) {
     local PlayerController PC;
 

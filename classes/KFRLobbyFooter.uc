@@ -3,7 +3,6 @@ class KFRLobbyFooter extends LobbyFooter;
 function bool OnFooterClick(GUIComponent Sender) {
     local GUIController C;
     local PlayerController PC;
-    local int i;
 
     PC= PlayerOwner();
     C= Controller;
@@ -12,8 +11,7 @@ function bool OnFooterClick(GUIComponent Sender) {
         LobbyMenu(PageOwner).bAllowClose = true;
         C.ViewportOwner.Console.ConsoleCommand("DISCONNECT");
         KFGUIController(C).ReturnToMainMenu();
-    }
-    else if (Sender == b_Ready) {
+    } else if (Sender == b_Ready) {
         if (PC.PlayerReplicationInfo.Team != none) {
             if (PC.Level.NetMode == NM_Standalone || !PC.PlayerReplicationInfo.bReadyToPlay) {
                 if (KFPlayerController(PC) != none) {
@@ -28,8 +26,7 @@ function bool OnFooterClick(GUIComponent Sender) {
                 }
 
                 b_Ready.Caption= UnreadyString;
-            }
-            else {
+            } else {
                 if (KFPlayerController(PC) != none) {
                     KFPlayerController(PC).ServerUnreadyPlayer();
                     PC.PlayerReplicationInfo.bReadyToPlay = False;
@@ -37,62 +34,17 @@ function bool OnFooterClick(GUIComponent Sender) {
                 }
             }
         }
-    }
-    else if (Sender == b_Options) {
+    } else if (Sender == b_Options) {
         PC.ClientOpenMenu("KFGUI.KFSettingsPage", false);
-    }
-    else if (Sender == b_Perks) {
+    } else if (Sender == b_Perks) {
         if (!Controller.CheckSteam()) {
             Controller.OpenMenu(Controller.QuestionMenuClass);
             GUIQuestionPage(Controller.TopPage()).SetupQuestion(class'KFMainMenu'.default.SteamMustBeRunningText, QBTN_Ok, QBTN_Ok);
             return false;
-        }
-
-        if (PC != none) {
-            if (PC.SteamStatsAndAchievements == none) {
-                if (PC.Level.NetMode != NM_Client) {
-                    PC.SteamStatsAndAchievements = PC.Spawn(PC.default.SteamStatsAndAchievementsClass, PC);
-                    if (!PC.SteamStatsAndAchievements.Initialize(PC)) {
-                        Controller.OpenMenu(Controller.QuestionMenuClass);
-                        GUIQuestionPage(Controller.TopPage()).SetupQuestion(class'KFMainMenu'.default.UnknownSteamErrorText, QBTN_Ok, QBTN_Ok);
-                        PC.SteamStatsAndAchievements.Destroy();
-                        PC.SteamStatsAndAchievements= none;
-                    }
-                    else {
-                        PC.SteamStatsAndAchievements.OnDataInitialized= OnSteamStatsAndAchievementsReady;
-                    }
-                }
-                else {
-                    Controller.OpenMenu(Controller.QuestionMenuClass);
-                    GUIQuestionPage(Controller.TopPage()).SetupQuestion(class'KFMainMenu'.default.UnknownSteamErrorText, QBTN_Ok, QBTN_Ok);
-                }
-
-                return false;
-            }
-            else if (!PC.SteamStatsAndAchievements.bInitialized) {
-                PC.SteamStatsAndAchievements.OnDataInitialized = OnSteamStatsAndAchievementsReady;
-                PC.SteamStatsAndAchievements.GetStatsAndAchievements();
-                return false;
-            }
-
-            for (i = 0; i < class'PerkList'.default.perks.Length; i++)  {
-                if (KFSteamStatsAndAchievements(PC.SteamStatsAndAchievements).GetPerkProgress(i) < 0.0) {
-                    Controller.OpenMenu(Controller.QuestionMenuClass);
-                    GUIQuestionPage(Controller.TopPage()).SetupQuestion(class'KFMainMenu'.default.UnknownSteamErrorText, QBTN_Ok, QBTN_Ok);
-                    PC.SteamStatsAndAchievements.OnDataInitialized= OnSteamStatsAndAchievementsReady;
-                    PC.SteamStatsAndAchievements.GetStatsAndAchievements();
-                    return false;
-                }
-            }
-
+        } else {
             PC.ClientOpenMenu(class'KFRLobbyMenu'.default.profilePage, false);
         }
     }
 
     return false;
 }
-
-function OnSteamStatsAndAchievementsReady() {
-    PlayerOwner().ClientOpenMenu(class'KFRLobbyMenu'.default.profilePage, false);
-}
-

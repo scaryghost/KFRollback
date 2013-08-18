@@ -1,5 +1,23 @@
 class ProfileTab extends KFTab_Profile;
 
+function ShowPanel(bool bShow) {
+    if (bShow) {
+        if (bInit) {
+            bRenderDude= True;
+            bInit= False;
+        }
+
+        lb_PerkSelect.List.InitList(KFStatsAndAchievements);
+        lb_PerkProgress.List.InitList();
+    }
+
+    lb_PerkSelect.SetPosition(i_BGPerks.WinLeft + 6.0 / float(Controller.ResX),
+                              i_BGPerks.WinTop + 38.0 / float(Controller.ResY),
+                              i_BGPerks.WinWidth - 10.0 / float(Controller.ResX),
+                              i_BGPerks.WinHeight - 35.0 / float(Controller.ResY),
+                              true);
+    SetVisibility(bShow);
+}
 function bool PickModel(GUIComponent Sender) {
     if (Controller.OpenMenu("KFRollback.ModelSelect", PlayerRec.DefaultName, Eval(Controller.CtrlPressed, PlayerRec.Race, ""))) {
         Controller.ActivePage.OnClose = ModelSelectClosed;
