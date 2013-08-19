@@ -214,6 +214,16 @@ function DrawPerk(Canvas Canvas) {
     DrawPortrait();
 
     if (!drawn) {
+        // Taken from ServerPerks.SRLobbyMenu
+        X = 9.f/Canvas.ClipX;
+        Y = 32.f/Canvas.ClipY;
+        modInfoTextBox.WinWidth = ADBackground.WinWidth-X*2.f;
+        modInfoTextBox.WinHeight = ADBackground.WinHeight-Y*1.25f;
+        modInfoTextBox.WinLeft = ADBackground.WinLeft+X;
+        modInfoTextBox.WinTop = ADBackground.WinTop+Y;
+        for(CurIndex= 0; CurIndex < class'PerkList'.default.perks.Length; CurIndex++) {
+            modInfoText$= "|" $ CurIndex $ "- " $ class'PerkList'.default.perks[CurIndex].default.VeterancyName;
+        }
         modInfoTextBox.SetContent(modInfoText);
         drawn= true;
     }
@@ -310,15 +320,15 @@ defaultproperties {
     End Object
     t_Footer=Footer
 
-	Begin Object Class=GUIScrollTextBox Name=ModInfo
-		WinWidth=0.312375
-		WinHeight=0.335000
-		WinLeft=0.072187
-		WinTop=0.354102
-		CharDelay=0.0025
-		EOLDelay=0.1
-		TabOrder=9
-		StyleName="NoBackground"
-	End Object
-	modInfoTextBox=ModInfo
+    Begin Object Class=GUIScrollTextBox Name=ModInfo
+        WinWidth=0.312375
+        WinHeight=0.335000
+        WinLeft=0.072187
+        WinTop=0.354102
+        CharDelay=0.0025
+        EOLDelay=0.1
+        TabOrder=9
+        StyleName="NoBackground"
+    End Object
+    modInfoTextBox=ModInfo
 }
