@@ -5,22 +5,43 @@ var() config int perkLevel;
 var() config bool enableKatana, enableAK;
 
 var localized string perkChangeTraderMsg;
-var class<KFLevelRules> levelRules;
+var class<LevelRules> levelRules;
+var KFGameType gameType;
 var string interactionClass, loginMenuClass;
 
+replication {
+    reliable if (Role == ROLE_AUTHORITY)
+        enableKatana, enableAK;
+}
+
 simulated function Tick(float DeltaTime) {
+    local KFRInteraction interaction;
     local PlayerController localController;
+    local int i;
 
     localController= Level.GetLocalPlayerController();
     if (localController != none) {
         localController.Player.InteractionMaster.AddInteraction(interactionClass, localController.Player);
+        for(i= 0; i < localController.Player.LocalInteractions.Length; i++) {
+            if (ClassIsChildOf(localController.Player.LocalInteractions[i].class, class'KFRollback.KFRInteraction')) {
+                interaction= KFRInteraction(localController.Player.LocalInteractions[i]);
+                if (!enableKatana) {
+                    interaction.itemsToRemove[interaction.itemsToRemove.Length]= class'KFRollback.KatanaPickup';
+                }
+                if (!enableAK) {
+                    interaction.itemsToRemove[interaction.itemsToRemove.Length]= class'KFMod.AK47Pickup';
+                }
+                interaction.removeItems();
+            }
+        }
     }
     Disable('Tick');
 }
 
 
 function PostBeginPlay() {
-    if (KFGameType(Level.Game) == none) {
+    gameType= KFGameType(Level.Game);
+    if (gameType == none) {
         Destroy();
         return;
     }
@@ -28,30 +49,25 @@ function PostBeginPlay() {
     AddToPackageMap();
     DeathMatch(Level.Game).LoginMenuClass= loginMenuClass;
 
-    //Should find a better way to do this than create 4 level rules classes, but lazy
-    if (enableKatana && enableAK) {
-        levelRules= class'LevelRules';
-    } else if (enableKatana && !enableAK) {
-        levelRules= class'LevelRules_NoAK';
-    } else if (!enableKatana && enableAK) {
-        levelRules= class'LevelRules_NoKatana';
-    } else if (!enableKatana && !enableAK) {
-        levelRules= class'LevelRules_NoAK_NoKatana';
-    }
-
     if (perkLevel < 0) {
         perkLevel= 0;
     } else if (perkLevel > 5) {
         perkLevel= 5;
     }
 
-    SetTimer(1.0, true);
+    SetTimer(1.0, false);
 }
 
 function Timer() {
-    KFGameType(Level.Game).KFLRules.destroy();
-    KFGameType(Level.Game).KFLRules= spawn(levelRules);
-    SetTimer(0.0, false);
+    gameType.KFLRules.destroy();
+    gameType.KFLRules= spawn(levelRules);
+
+    if (!enableKatana) {
+        LevelRules(gameType.KFLRules).remove(class'KFRollback.KatanaPickup');
+    }
+    if (!enableAK) {
+        LevelRules(gameType.KFLRules).remove(class'KFMod.AK47Pickup');
+    }
 }
 
 function bool CheckReplacement(Actor Other, out byte bSuperRelevant) {
@@ -131,8 +147,9 @@ static event string GetDescriptionText(string property) {
 defaultproperties {
     GroupName="KFRollback"
     FriendlyName="KF Rollback"
-    Description="Rolls back the game to 2009, mixing in bits of the Level Up, Heavy Metal, and 2010 Xmas updates"
+    Description="Rolls back the game to 2009, mixing in bits of the Level Up, Heavy Metal, and 2010 Xmas updates.  Version 1.0.0"
 
+    levelRules=class'LevelRules';
     perkChangeTraderMsg="You can only change perks during trader time"
     interactionClass="KFRollback.KFRInteraction"
     loginMenuClass="KFRollback.InvasionLoginMenu"

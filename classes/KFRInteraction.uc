@@ -1,13 +1,30 @@
 class KFRInteraction extends Interaction;
 
+var array<class<Pickup> > itemsToRemove;
 var string buyMenuClass, lobbyMenuClass;
+
+
+function removeItems() {
+    local LevelRules it;
+    local int i;
+
+    log("How many items do I gotta remove?"@itemsToRemove.Length);
+    foreach ViewportOwner.Actor.DynamicActors(class'KFRollback.LevelRules', it) {
+        for(i= 0; i < itemsToRemove.Length; i++) {
+            it.remove(itemsToRemove[i]);
+        }
+    }
+}
 
 event NotifyLevelChange() {
     Master.RemoveInteraction(self);
 }
 
 function Tick (float DeltaTime) {
-    if (KFGUIController(ViewportOwner.GUIController).ActivePage.class == class'KFGui.LobbyMenu') {
+    local KFGUIController guiController;
+
+    guiController= KFGUIController(ViewportOwner.GUIController);
+    if (guiController != none && guiController.ActivePage != none && guiController.ActivePage.class == class'KFGui.LobbyMenu') {
         KFPlayerController(ViewportOwner.Actor).LobbyMenuClassString= lobbyMenuClass;
         ViewportOwner.Actor.ClientCloseMenu(true, true);
         KFPlayerController(ViewportOwner.Actor).ShowLobbyMenu();
