@@ -23,8 +23,8 @@ simulated function Tick(float DeltaTime) {
     if (localController != none) {
         localController.Player.InteractionMaster.AddInteraction(interactionClass, localController.Player);
         for(i= 0; i < localController.Player.LocalInteractions.Length; i++) {
-            if (ClassIsChildOf(localController.Player.LocalInteractions[i].class, class'KFRollback.KFRInteraction')) {
-                interaction= KFRInteraction(localController.Player.LocalInteractions[i]);
+            interaction= KFRInteraction(localController.Player.LocalInteractions[i]);
+            if (interaction != none) {
                 if (!enableKatana) {
                     interaction.itemsToRemove[interaction.itemsToRemove.Length]= class'KFRollback.KatanaPickup';
                 }
