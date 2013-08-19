@@ -60,6 +60,8 @@ function bool CheckReplacement(Actor Other, out byte bSuperRelevant) {
     } else if (Knife(Other) != none) {
         Knife(Other).FireModeClass[0]=class'KFRollback.KnifeFire';
         Knife(Other).FireModeClass[1]=class'KFRollback.KnifeAltFire';
+    } else if (Crossbow(Other) != none) {
+        Crossbow(Other).FireModeClass[0]=class'KFRollback.CrossbowFire';
     }
     return super.CheckReplacement(Other, bSuperRelevant);
 }
