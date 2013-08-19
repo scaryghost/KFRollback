@@ -1,16 +1,6 @@
 class VetSharpshooter extends KFVetSharpshooter
     abstract;
 
-// Change the cost of particular items
-static function float GetCostScaling(KFPlayerReplicationInfo KFPRI, class<Pickup> Item)
-{
-    if ( Item == class'KFRollback.DeaglePickup' || Item == class'KFRollback.DualDeaglePickup') {
-        return 0.9 - (0.10 * float(KFPRI.ClientVeteranSkillLevel)); // Up to 70% discount on Handcannon/Dual Handcannons/EBR/44 Magnum(s)
-    }
-
-    return 1.0;
-}
-
 // Modify fire speed
 static function float GetFireSpeedMod(KFPlayerReplicationInfo KFPRI, Weapon Other) {
     if (Winchester(Other) != none) {

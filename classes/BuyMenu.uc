@@ -9,5 +9,6 @@ defaultproperties {
     End Object
     QuickPerkSelect=QS
 
+    PanelClass(0)="KFRollback.BuyMenuTab"
     PanelClass(1)="KFRollback.PerksTab"
 }    
