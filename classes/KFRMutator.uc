@@ -1,6 +1,12 @@
 class KFRMutator extends Mutator
     config(KFRollBack);
 
+struct ReplacementPair {
+    var class<Object> oldClass;
+    var class<Object> newClass;
+};
+
+
 var() config int perkLevel;
 var() config bool enableKatana, enableAK;
 
@@ -9,6 +15,7 @@ var class<LevelRules> levelRules;
 var KFGameType gameType;
 var string interactionClass, loginMenuClass;
 var int minPerkLevel, maxPerkLevel;
+var array<ReplacementPair> pickupReplacements, firemodeReplacements;
 
 replication {
     reliable if (Role == ROLE_AUTHORITY)
@@ -72,17 +79,39 @@ function Timer() {
 }
 
 function bool CheckReplacement(Actor Other, out byte bSuperRelevant) {
+    local int i, j;
+
     if (KFPlayerReplicationInfo(Other) != none) {
         KFPlayerReplicationInfo(Other).ClientVeteranSkillLevel= perkLevel;
-    } else if (Knife(Other) != none) {
-        Knife(Other).FireModeClass[0]=class'KFRollback.KnifeFire';
-        Knife(Other).FireModeClass[1]=class'KFRollback.KnifeAltFire';
-    } else if (Crossbow(Other) != none) {
-        Crossbow(Other).FireModeClass[0]=class'KFRollback.CrossbowFire';
-    } else if (Bullpup(Other) != none) {
-        Bullpup(Other).FireModeClass[0]= class'KFRollback.BullpupFire';
+    } else if (Weapon(Other) != none) {
+        for(i= 0; i < ArrayCount(Weapon(Other).FireModeClass); i++) {
+            j= shouldReplace(Weapon(Other).FireModeClass[i], firemodeReplacements);
+            if (j != -1) {
+                Weapon(Other).FireModeClass[i]= class<WeaponFire>(firemodeReplacements[j].newClass);
+            }
+        }
+    } else if (KFWeaponPickup(Other) != none || KFAmmoPickup(Other) != none) {
+        i= shouldReplace(Other.class, pickupReplacements);
+        if (i != -1) {
+            ReplaceWith(Other,String(pickupReplacements[i].newClass));
+            return false;
+        }
     }
+
     return super.CheckReplacement(Other, bSuperRelevant);
+}
+
+function int shouldReplace(class<Object> classRef, array<ReplacementPair> replacementArray) {
+    local int i, replaceIndex;
+
+    replaceIndex= -1;
+    for(i=0; replaceIndex == -1 && i < replacementArray.length; i++) {
+        if (classRef == replacementArray[i].oldClass) {
+            replaceIndex= i;
+        }
+    }
+    
+    return replaceIndex;
 }
 
 function Mutate(string Command, PlayerController Sender) {
@@ -152,6 +181,9 @@ defaultproperties {
     FriendlyName="KF Rollback"
     Description="Rolls back the game to 2009, mixing in bits of the Level Up, Heavy Metal, and 2010 Xmas updates.  Version 1.0.0"
 
+    RemoteRole= ROLE_SimulatedProxy
+    bAlwaysRelevant= true
+
     levelRules=class'LevelRules';
     perkChangeTraderMsg="You can only change perks during trader time"
     interactionClass="KFRollback.KFRInteraction"
@@ -159,6 +191,15 @@ defaultproperties {
     minPerkLevel=0
     maxPerkLevel=5
 
-    RemoteRole= ROLE_SimulatedProxy
-    bAlwaysRelevant= true
+    firemodeReplacements(0)=(oldClass=class'KFMod.KnifeFire',newClass=class'KFRollback.KnifeFire')
+    firemodeReplacements(1)=(oldClass=class'KFMod.KnifeFireB',newClass=class'KFRollback.KnifeAltFire')
+    firemodeReplacements(2)=(oldClass=class'KFMod.CrossbowFire',newClass=class'KFRollback.CrossbowFire')
+    firemodeReplacements(3)=(oldClass=class'KFMod.BullpupFire',newClass=class'KFRollback.BullpupFire')
+
+    pickupReplacements(0)=(oldClass=class'KFMod.AxePickup',newClass=class'KFRollback.AxePickup')
+    pickupReplacements(1)=(oldClass=class'KFMod.ChainsawPickup',newClass=class'KFRollback.ChainsawPickup')
+    pickupReplacements(2)=(oldClass=class'KFMod.KatanaPickup',newClass=class'KFRollback.KatanaPickup')
+    pickupReplacements(3)=(oldClass=class'KFMod.LAWPickup',newClass=class'KFRollback.LAWPickup')
+    pickupReplacements(4)=(oldClass=class'KFMod.LAWAmmoPickup',newClass=class'KFRollback.LAWAmmoPickup')
+    pickupReplacements(5)=(oldClass=class'KFMod.MachetePickup',newClass=class'KFRollback.MachetePickup')
 }
