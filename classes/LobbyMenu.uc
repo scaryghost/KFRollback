@@ -18,8 +18,6 @@ function InitComponent(GUIController MyC, GUIComponent MyO) {
     i_Portrait.WinTop= PlayerPortraitBG.ActualTop() + 30;
     i_Portrait.WinHeight= PlayerPortraitBG.ActualHeight() - 36;
     t_ChatBox.FocusInstead= PerkClickLabel;
-
-    PlayerOwner().ConsoleCommand("mutate perkchange "$Rand(class'PerkList'.default.perks.Length));
 }
 
 event Opened(GUIComponent Sender) {
@@ -96,9 +94,7 @@ function bool InternalOnPreDraw(Canvas C) {
     }
 
     if (KFPlayerController(PC) != none && bShouldUpdateVeterancy) {
-        if (KFPlayerController(PC).SelectedVeterancy == none) {
-            PC.ConsoleCommand("mutate perkchange "$KFPlayerController(PC).SelectedVeterancy.default.PerkIndex);
-        }
+        PC.ConsoleCommand("mutate perkchange "$Rand(class'PerkList'.default.perks.Length));
         bShouldUpdateVeterancy = false;
     }
 
@@ -223,6 +219,9 @@ function DrawPerk(Canvas Canvas) {
     }
 
     CurIndex= KFPlayerController(PlayerOwner()).SelectedVeterancy.default.PerkIndex;
+    if (KFPlayerReplicationInfo(PlayerOwner().PlayerReplicationInfo).ClientVeteranSkillLevel > class'KFRMutator'.default.maxPerkLevel) {
+        PlayerOwner().ConsoleCommand("mutate perkchange "$CurIndex);
+    }
     LevelIndex= KFPlayerReplicationInfo(PlayerOwner().PlayerReplicationInfo).ClientVeteranSkillLevel;
     PerkName=  KFPlayerController(PlayerOwner()).SelectedVeterancy.default.VeterancyName;
     PerkLevelString= LvAbbrString @ LevelIndex;

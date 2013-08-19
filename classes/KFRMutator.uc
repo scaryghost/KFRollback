@@ -8,6 +8,7 @@ var localized string perkChangeTraderMsg;
 var class<LevelRules> levelRules;
 var KFGameType gameType;
 var string interactionClass, loginMenuClass;
+var int minPerkLevel, maxPerkLevel;
 
 replication {
     reliable if (Role == ROLE_AUTHORITY)
@@ -49,10 +50,10 @@ function PostBeginPlay() {
     AddToPackageMap();
     DeathMatch(Level.Game).LoginMenuClass= loginMenuClass;
 
-    if (perkLevel < 0) {
-        perkLevel= 0;
-    } else if (perkLevel > 5) {
-        perkLevel= 5;
+    if (perkLevel < minPerkLevel) {
+        perkLevel= minPerkLevel;
+    } else if (perkLevel > maxPerkLevel) {
+        perkLevel= maxPerkLevel;
     }
 
     SetTimer(1.0, false);
@@ -153,6 +154,8 @@ defaultproperties {
     perkChangeTraderMsg="You can only change perks during trader time"
     interactionClass="KFRollback.KFRInteraction"
     loginMenuClass="KFRollback.InvasionLoginMenu"
+    minPerkLevel=0
+    maxPerkLevel=5
 
     RemoteRole= ROLE_SimulatedProxy
     bAlwaysRelevant= true
