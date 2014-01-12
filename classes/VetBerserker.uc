@@ -10,7 +10,7 @@ static function float GetMeleeMovementSpeedModifier(KFPlayerReplicationInfo KFPR
     return 0;
 }
 
-static function int ReduceDamage(KFPlayerReplicationInfo KFPRI, KFPawn Injured, KFMonster Instigator, int InDamage, class<DamageType> DmgType) {
+static function int ReduceDamage(KFPlayerReplicationInfo KFPRI, KFPawn Injured, Pawn Instigator, int InDamage, class<DamageType> DmgType) {
     local float scale;
 
     if (DmgType == class'DamTypeVomit') {
