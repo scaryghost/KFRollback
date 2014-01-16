@@ -33,6 +33,7 @@ simulated function Tick(float DeltaTime) {
         for(i= 0; i < localController.Player.LocalInteractions.Length; i++) {
             interaction= KFRInteraction(localController.Player.LocalInteractions[i]);
             if (interaction != none) {
+                log("Enabled katana? "@enableKatana@", Enabled AK? "@enableAK);
                 if (!enableKatana) {
                     interaction.itemsToRemove[interaction.itemsToRemove.Length]= class'KFRollback.KatanaPickup';
                 }

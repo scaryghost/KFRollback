@@ -1,4 +1,26 @@
-class BuyMenu extends GUIBuyMenu;
+class BuyMenu extends GUIBuyMenu_Story;
+
+function UpdateHeader() {
+    if (PlayerOwner().GameReplicationInfo.IsA('KF_StoryGRI')) {
+        super.UpdateHeader();
+    } else {
+        super(GUIBuyMenu).UpdateHeader();
+    }
+}
+
+function InitComponent(GUIController MyController, GUIComponent MyOwner) {
+    if (PlayerOwner().GameReplicationInfo.IsA('KF_StoryGRI')) {
+        super.InitComponent(MyController, MyOwner);
+    } else {
+        super(GUIBuyMenu).InitComponent(MyController, MyOwner);
+    }
+}
+
+function FillInfoFromVolume() {
+    if (PlayerOwner().GameReplicationInfo.IsA('KF_StoryGRI')) {
+        super.FillInfoFromVolume();
+    }
+}
 
 defaultproperties {
     Begin Object class=QuickPerkSelect Name=QS
@@ -9,5 +31,6 @@ defaultproperties {
     End Object
     QuickPerkSelect=QS
 
+    PanelClass(0)="KFRollback.BuyMenuTab"
     PanelClass(1)="KFRollback.PerksTab"
 }    
