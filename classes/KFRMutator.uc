@@ -179,8 +179,8 @@ static event string GetDescriptionText(string property) {
 
 defaultproperties {
     GroupName="KFRollback"
-    FriendlyName="KF Rollback"
-    Description="Rolls back the game to 2009, mixing in bits of the Level Up, Heavy Metal, and 2010 Xmas updates.  Version 1.0.0"
+    FriendlyName="KF Rollback v2.0"
+    Description="Rolls back the game to 2009, mixing in bits of the Level Up, Heavy Metal, and 2010 Xmas updates"
 
     RemoteRole= ROLE_SimulatedProxy
     bAlwaysRelevant= true

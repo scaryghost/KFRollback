@@ -7,10 +7,10 @@ https://github.com/scaryghost/KFRollback
 Scary Ghost
 
 ## Version
-1.0.0
+2.0
 
 ## Release Notes
-https://github.com/scaryghost/KFRollback/wiki/Release-KFRollback-1.0.0
+https://github.com/scaryghost/KFRollback/wiki/Release-KFRollback-2.0
 
 ## About
 Reverts the game back to its 2009 days from both a game play and artistic point of view.  Some changes from the later 
