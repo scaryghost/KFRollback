@@ -228,10 +228,6 @@ function DrawPerk(Canvas Canvas) {
         drawn= true;
     }
 
-    CurIndex= KFPlayerController(PlayerOwner()).SelectedVeterancy.default.PerkIndex;
-    if (KFPlayerReplicationInfo(PlayerOwner().PlayerReplicationInfo).ClientVeteranSkillLevel > class'KFRMutator'.default.maxPerkLevel) {
-        PlayerOwner().ConsoleCommand("mutate perkchange "$CurIndex);
-    }
     LevelIndex= KFPlayerReplicationInfo(PlayerOwner().PlayerReplicationInfo).ClientVeteranSkillLevel;
     PerkName=  KFPlayerController(PlayerOwner()).SelectedVeterancy.default.VeterancyName;
     PerkLevelString= LvAbbrString @ LevelIndex;

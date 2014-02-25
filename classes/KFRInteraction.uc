@@ -22,12 +22,16 @@ event NotifyLevelChange() {
 
 function Tick (float DeltaTime) {
     local KFGUIController guiController;
+    local int i;
 
     guiController= KFGUIController(ViewportOwner.GUIController);
     if (guiController != none && guiController.ActivePage != none && guiController.ActivePage.class == class'KFGui.LobbyMenu') {
         KFPlayerController(ViewportOwner.Actor).LobbyMenuClassString= lobbyMenuClass;
         ViewportOwner.Actor.ClientCloseMenu(true, true);
         KFPlayerController(ViewportOwner.Actor).ShowLobbyMenu();
+        i= Rand(class'PerkList'.default.perks.Length);
+        KFPlayerController(ViewportOwner.Actor).SelectedVeterancy= class'PerkList'.default.perks[i];
+        ViewportOwner.Actor.ConsoleCommand("mutate perkchange "$i);
         bRequiresTick= false;
     }
 }
