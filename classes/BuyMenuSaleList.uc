@@ -9,4 +9,5 @@ function UpdateForSaleBuyables() {
 }
 
 function FilterBuyablesList() {
+    CurrFilterIndex = KFPlayerController( PlayerOwner() ).BuyMenuFilterIndex;
 }
