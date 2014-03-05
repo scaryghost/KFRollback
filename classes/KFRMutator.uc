@@ -85,6 +85,9 @@ function bool CheckReplacement(Actor Other, out byte bSuperRelevant) {
     if (KFPlayerReplicationInfo(Other) != none) {
         KFPlayerReplicationInfo(Other).ClientVeteranSkillLevel= perkLevel;
     } else if (Weapon(Other) != none) {
+        if ((!enableKatana && Katana(Other) != none) || (!enableAK && AK47AssaultRifle(Other) != none)) {
+            return false;
+        }
         for(i= 0; i < ArrayCount(Weapon(Other).FireModeClass); i++) {
             j= shouldReplace(Weapon(Other).FireModeClass[i], firemodeReplacements);
             if (j != -1) {
@@ -92,6 +95,9 @@ function bool CheckReplacement(Actor Other, out byte bSuperRelevant) {
             }
         }
     } else if (KFWeaponPickup(Other) != none || KFAmmoPickup(Other) != none) {
+        if ((!enableKatana && KatanaPickup(Other) != none) || (!enableAK && AK47Pickup(Other) != none)) {
+            return false;
+        }
         i= shouldReplace(Other.class, pickupReplacements);
         if (i != -1) {
             ReplaceWith(Other,String(pickupReplacements[i].newClass));
