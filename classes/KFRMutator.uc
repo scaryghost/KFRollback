@@ -54,6 +54,7 @@ function bool CheckReplacement(Actor Other, out byte bSuperRelevant) {
     kfpRepInfo= KFPlayerReplicationInfo(Other);
     if (kfpRepInfo != none) {
         kfrLRepInfo= kfpRepInfo.Spawn(class'KFRLinkedReplicationInfo', kfpRepInfo.Owner);
+        kfrLRepInfo.mut= self;
         kfrLRepInfo.NextReplicationInfo= kfpRepInfo.CustomReplicationInfo;
         kfpRepInfo.CustomReplicationInfo= kfrLRepInfo;
         kfpRepInfo.ClientVeteranSkillLevel= pack.getMaxPerkLevel();
@@ -66,6 +67,14 @@ function bool CheckReplacement(Actor Other, out byte bSuperRelevant) {
     }
 
     return super.CheckReplacement(Other, bSuperRelevant);
+}
+
+function weaponDestroyed(class<Weapon> WClass) {
+    gameType.WeaponDestroyed(WClass);
+}
+
+function weaponSpawned(Inventory I) {
+    gameType.WeaponSpawned(I);
 }
 
 static function FillPlayInfo(PlayInfo PlayInfo) {
