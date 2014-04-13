@@ -49,6 +49,7 @@ function Timer() {
 function bool CheckReplacement(Actor Other, out byte bSuperRelevant) {
     local KFPlayerReplicationInfo kfpRepInfo;
     local KFRLinkedReplicationInfo kfrLRepInfo;
+    local string replacement;
 
     kfpRepInfo= KFPlayerReplicationInfo(Other);
     if (kfpRepInfo != none) {
@@ -56,12 +57,12 @@ function bool CheckReplacement(Actor Other, out byte bSuperRelevant) {
         kfrLRepInfo.NextReplicationInfo= kfpRepInfo.CustomReplicationInfo;
         kfpRepInfo.CustomReplicationInfo= kfrLRepInfo;
         kfpRepInfo.ClientVeteranSkillLevel= pack.getMaxPerkLevel();
-    } else if (Weapon(Other) != none) {
-        return pack.replaceWeapon(Weapon(Other));
-    } else if (KFWeaponPickup(Other) != none) {
-        return pack.replaceWeaponPickup(KFWeaponPickup(Other));
-    } else if (KFAmmoPickup(Other) != none) {
-        return pack.replaceAmmoPickup(KFAmmoPickup(Other));
+    } else if (Weapon(Other) != none || KFWeaponPickup(Other) != none || KFAmmoPickup(Other) != none) {
+        replacement= pack.replaceActor(Other);
+        if (Len(replacement) != 0) {
+            ReplaceWith(Other, replacement);
+            return false;
+        }
     }
 
     return super.CheckReplacement(Other, bSuperRelevant);
