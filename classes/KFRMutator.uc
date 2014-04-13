@@ -5,15 +5,22 @@ var() config string rollbackPackName;
 
 var KFGameType gameType;
 var string interactionClass, loginMenuClass;
-
 var RollbackPack pack;
+
+replication {
+    reliable if (Role == ROLE_Authority)
+        rollbackPackName;
+}
 
 simulated function Tick(float DeltaTime) {
     local PlayerController localController;
+    local RollbackPack localPack;
 
     localController= Level.GetLocalPlayerController();
     if (localController != none) {
         localController.Player.InteractionMaster.AddInteraction(interactionClass, localController.Player);
+        localPack= new class<RollbackPack>(DynamicLoadObject(rollbackPackName, class'Class'));
+        class'KFRLinkedReplicationInfo'.static.findLRI(localController.PlayerReplicationInfo).pack= localPack;
     }
     Disable('Tick');
 }
