@@ -1,5 +1,6 @@
 class ProfileTab extends KFTab_Profile;
 
+var KFRLinkedReplicationInfo kfrLRepInfo;
 var string modelSelectClass;
 
 function ShowPanel(bool bShow) {
@@ -11,6 +12,7 @@ function ShowPanel(bool bShow) {
 
         lb_PerkSelect.List.InitList(KFStatsAndAchievements);
         lb_PerkProgress.List.InitList();
+        kfrLRepInfo= class'KFRLinkedReplicationInfo'.static.findLRI(PlayerOwner().PlayerReplicationInfo);
     }
 
     lb_PerkSelect.SetPosition(i_BGPerks.WinLeft + 6.0 / float(Controller.ResX),
@@ -29,7 +31,6 @@ function bool PickModel(GUIComponent Sender) {
 }
 
 function SaveSettings() {
-    local KFRLinkedReplicationInfo kfrLRepInfo;
     local PlayerController PC;
 
     PC = PlayerOwner();
@@ -50,13 +51,12 @@ function SaveSettings() {
         }
     }
 
-    kfrLRepInfo= class'KFRLinkedReplicationInfo'.static.findLRI(PC.PlayerReplicationInfo);
     KFPlayerController(PC).SelectedVeterancy = kfrLRepInfo.pack.getPerks()[lb_PerkSelect.GetIndex()];
     kfrLRepInfo.changePerk(KFPlayerController(PC).SelectedVeterancy, kfrLRepInfo.pack.getMaxPerkLevel());
 }
 
 function OnPerkSelected(GUIComponent Sender) {
-    lb_PerkEffects.SetContent(class'PerkList'.default.perks[lb_PerkSelect.GetIndex()].default.LevelEffects[KFPlayerReplicationInfo(PlayerOwner().PlayerReplicationInfo).ClientVeteranSkillLevel]);
+    lb_PerkEffects.SetContent(kfrLRepInfo.pack.getPerks()[lb_PerkSelect.GetIndex()].default.LevelEffects[KFPlayerReplicationInfo(PlayerOwner().PlayerReplicationInfo).ClientVeteranSkillLevel]);
     lb_PerkProgress.List.PerkChanged(KFStatsAndAchievements, lb_PerkSelect.GetIndex());
 }
 

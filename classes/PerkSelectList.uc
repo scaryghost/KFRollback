@@ -1,6 +1,7 @@
 class PerkSelectList extends KFPerkSelectList;
 
 function InitList(KFSteamStatsAndAchievements StatsAndAchievements) {
+    local KFRLinkedReplicationInfo kfrLRepInfo;
     local int i;
     local KFPlayerController KFPC;
 
@@ -10,8 +11,10 @@ function InitList(KFSteamStatsAndAchievements StatsAndAchievements) {
     // Hold onto our reference
     KFStatsAndAchievements= StatsAndAchievements;
 
+    kfrLRepInfo= class'KFRLinkedReplicationInfo'.static.findLRI(KFPC.PlayerReplicationInfo);
+
     // Update the ItemCount and select the first item
-    ItemCount= class'PerkList'.default.perks.Length;
+    ItemCount= kfrLRepInfo.pack.getPerks().Length;
     SetIndex(0);
 
     PerkName.Remove(0, PerkName.Length);
@@ -19,11 +22,11 @@ function InitList(KFSteamStatsAndAchievements StatsAndAchievements) {
     PerkProgress.Remove(0, PerkProgress.Length);
 
     for (i= 0; i < ItemCount; i++) {
-        PerkName[PerkName.Length] = class'PerkList'.default.perks[i].default.VeterancyName;
+        PerkName[PerkName.Length] = kfrLRepInfo.pack.getPerks()[i].default.VeterancyName;
         PerkLevelString[PerkLevelString.Length] = LvAbbrString @ KFPlayerReplicationInfo(KFPC.PlayerReplicationInfo).ClientVeteranSkillLevel;
         PerkProgress[PerkProgress.Length] = 0;
 
-        if (class'PerkList'.default.perks[i] == KFPC.SelectedVeterancy) {
+        if (kfrLRepInfo.pack.getPerks()[i] == KFPC.SelectedVeterancy) {
             SetIndex(i);
         }
     }

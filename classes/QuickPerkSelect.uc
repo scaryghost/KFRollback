@@ -1,13 +1,19 @@
 class QuickPerkSelect extends KFGui.KFQuickPerkSelect;
 
+var KFRLinkedReplicationInfo kfrLRepInfo;
+
+event InitComponent(GUIController MyController, GUIComponent MyOwner) {
+    super.InitComponent(MyController, MyOwner);
+    
+    kfrLRepInfo= class'KFRLinkedReplicationInfo'.static.findLRI(PlayerOwner().PlayerReplicationInfo);
+}
+
 function bool InternalOnClick(GUIComponent Sender) {
-    local KFRLinkedReplicationInfo kfrLRepInfo;
     local PlayerController PC;
 
     // Grab the Player Controller for later use
     PC= PlayerOwner();
     if (Sender.IsA('KFIndexedGUIImage') && !KFPlayerController(PC).bChangedVeterancyThisWave) {
-        kfrLRepInfo= class'KFRLinkedReplicationInfo'.static.findLRI(PC.PlayerReplicationInfo);
         KFPlayerController(PC).SelectedVeterancy = kfrLRepInfo.pack.getPerks()[KFIndexedGUIImage(Sender).Index];
         kfrLRepInfo.changePerk(KFPlayerController(PC).SelectedVeterancy, kfrLRepInfo.pack.getMaxPerkLevel());
         bPerkChange = true;
@@ -16,7 +22,7 @@ function bool InternalOnClick(GUIComponent Sender) {
     return false;   
 }
 
-function bool MyOnDraw(Canvas C) {                                                                                                         
+function bool MyOnDraw(Canvas C) {
     local int i, j;
 
     super.OnDraw(C);
@@ -41,7 +47,7 @@ function bool MyOnDraw(Canvas C) {
     // Draw the available perks
     for (i = 0; i < MaxPerks; i++) {
         if (i != CurPerk) {      
-            PerkSelectIcons[j].Image = class'PerkList'.default.perks[i].default.OnHUDIcon;
+            PerkSelectIcons[j].Image = kfrLRepInfo.pack.getPerks()[i].default.OnHUDIcon;
             PerkSelectIcons[j].Index = i;
         
             if (KFPlayerController(PlayerOwner()).bChangedVeterancyThisWave) {
@@ -61,9 +67,13 @@ function bool MyOnDraw(Canvas C) {
     return false;
 }
 
-function DrawCurrentPerk(Canvas C, Int PerkIndex) {       
-    C.SetPos(WinLeft * C.ClipX , WinTop * C.ClipY);             
-    C.DrawTileScaled(class'PerkList'.default.perks[PerkIndex].default.OnHUDIcon, (WinHeight * C.ClipY) / class'PerkList'.default.perks[PerkIndex].default.OnHUDIcon.USize, (WinHeight * C.ClipY) / class'PerkList'.default.perks[PerkIndex].default.OnHUDIcon.USize);
+function DrawCurrentPerk(Canvas C, Int PerkIndex) {
+    local class<KFVeterancyTypes> perk;
+
+    perk= kfrLRepInfo.pack.getPerks()[PerkIndex];
+    C.SetPos(WinLeft * C.ClipX , WinTop * C.ClipY);
+    C.DrawTileScaled(perk.default.OnHUDIcon, (WinHeight * C.ClipY) / perk.default.OnHUDIcon.USize, 
+            (WinHeight * C.ClipY) / perk.default.OnHUDIcon.USize);
 }
 
 function CheckPerks(KFSteamStatsAndAchievements StatsAndAchievements) {
@@ -77,11 +87,11 @@ function CheckPerks(KFSteamStatsAndAchievements StatsAndAchievements) {
     KFStatsAndAchievements = StatsAndAchievements;
 
     // Update the ItemCount and select the first item
-    MaxPerks = class'PerkList'.default.perks.Length;
+    MaxPerks = kfrLRepInfo.pack.getPerks().Length;
     //SetIndex(0);
 
     for (i = 0; i < MaxPerks; i++) {
-        if (class'PerkList'.default.perks[i] == KFPC.SelectedVeterancy) {
+        if (kfrLRepInfo.pack.getPerks()[i] == KFPC.SelectedVeterancy) {
             CurPerk = i;
         }
     }

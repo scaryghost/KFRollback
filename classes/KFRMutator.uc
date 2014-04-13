@@ -3,7 +3,6 @@ class KFRMutator extends Mutator
 
 var() config string rollbackPackName;
 
-var localized string perkChangeTraderMsg;
 var KFGameType gameType;
 var string interactionClass, loginMenuClass;
 
@@ -61,46 +60,6 @@ function bool CheckReplacement(Actor Other, out byte bSuperRelevant) {
     return super.CheckReplacement(Other, bSuperRelevant);
 }
 
-function Mutate(string Command, PlayerController Sender) {
-    local KFPlayerController kfPC;
-    local KFPlayerReplicationInfo kfRepInfo;
-    local array<string> parts;
-    local int index;
-    Split(Command, " ", parts);
-
-    kfPC= KFPlayerController(Sender);
-    kfRepInfo= KFPlayerReplicationInfo(kfPC.PlayerReplicationInfo);
-    if (kfPC != none && kfRepInfo != none && parts.Length >= 2 && parts[0] ~= "perkchange") {
-        index= int(parts[1]);
-        if (index < 0 || index > class'PerkList'.default.perks.Length) {
-            Sender.ClientMessage("Usage: mutate perkchange [0-" $ class'PerkList'.default.perks.Length $ "]");
-        } else {
-            kfPC.SelectedVeterancy= class'PerkList'.default.perks[index];
-
-            if (KFGameReplicationInfo(Level.GRI).bWaveInProgress && kfPC.SelectedVeterancy != kfRepInfo.ClientVeteranSkill) {
-                Sender.ClientMessage(perkChangeTraderMsg);
-            } else if (!kfPC.bChangedVeterancyThisWave) {
-                if (kfPC.SelectedVeterancy != kfRepInfo.ClientVeteranSkill) {
-                    Sender.ClientMessage(Repl(kfPC.YouAreNowPerkString, "%Perk%", kfPC.SelectedVeterancy.Default.VeterancyName));
-                }
-                if (Level.GRI.bMatchHasBegun) {
-                    kfPC.bChangedVeterancyThisWave = true;
-                }
-
-                kfRepInfo.ClientVeteranSkill = kfPC.SelectedVeterancy;
-                kfRepInfo.ClientVeteranSkillLevel= pack.getMaxPerkLevel();
-
-                if( KFHumanPawn(kfPC.Pawn) != none ) {
-                    KFHumanPawn(kfPC.Pawn).VeterancyChanged();
-                }    
-            } else {
-                Sender.ClientMessage(kfPC.PerkChangeOncePerWaveString);
-            }
-        }
-    }    
-    super.Mutate(Command, Sender);
-}
-
 static function FillPlayInfo(PlayInfo PlayInfo) {
     super.FillPlayInfo(PlayInfo);
 
@@ -125,7 +84,6 @@ defaultproperties {
     RemoteRole= ROLE_SimulatedProxy
     bAlwaysRelevant= true
 
-    perkChangeTraderMsg="You can only change perks during trader time"
     interactionClass="KFRollback.KFRInteraction"
     loginMenuClass="KFRollback.InvasionLoginMenu"
 }

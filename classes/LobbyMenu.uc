@@ -4,6 +4,7 @@ var localized string modInfoText;
 var bool drawn;
 var string profilePage;
 var automated GUIScrollTextBox modInfoTextBox;
+var KFRLinkedReplicationInfo kfrLRepInfo;
 
 function InitComponent(GUIController MyC, GUIComponent MyO) {
     local int i;
@@ -26,6 +27,7 @@ event Opened(GUIComponent Sender) {
     VideoTimer = 0.0;
     VideoPlayed = false;
     VideoOpened = false;
+    kfrLRepInfo= class'KFRLinkedReplicationInfo'.static.findLRI(PlayerOwner().PlayerReplicationInfo);
 }
 
 function SetPlayerRec() {
@@ -68,7 +70,6 @@ function bool InternalOnPreDraw(Canvas C) {
     local KFGameReplicationInfo KFGRI;
     local PlayerController PC;
     local PlayerReplicationInfo InList[6];
-    local KFRLinkedReplicationInfo kfrLRepInfo;
 
     local bool bWasThere;
 
@@ -96,7 +97,6 @@ function bool InternalOnPreDraw(Canvas C) {
     }
 
     if (KFPlayerController(PC) != none && bShouldUpdateVeterancy) {
-        kfrLRepInfo= class'KFRLinkedReplicationInfo'.static.findLRI(PC.PlayerReplicationInfo);
         kfrLRepInfo.changeRandomPerk();
         bShouldUpdateVeterancy = false;
     }
@@ -224,8 +224,8 @@ function DrawPerk(Canvas Canvas) {
         modInfoTextBox.WinHeight = ADBackground.WinHeight-Y*1.25f;
         modInfoTextBox.WinLeft = ADBackground.WinLeft+X;
         modInfoTextBox.WinTop = ADBackground.WinTop+Y;
-        for(CurIndex= 0; CurIndex < class'PerkList'.default.perks.Length; CurIndex++) {
-            modInfoText$= "|" $ CurIndex $ "- " $ class'PerkList'.default.perks[CurIndex].default.VeterancyName;
+        for(CurIndex= 0; CurIndex < kfrLRepInfo.pack.getPerks().Length; CurIndex++) {
+            modInfoText$= "|" $ CurIndex $ "- " $ kfrLRepInfo.pack.getPerks()[CurIndex].default.VeterancyName;
         }
         modInfoTextBox.SetContent(modInfoText);
         drawn= true;
@@ -267,7 +267,7 @@ function DrawPerk(Canvas Canvas) {
 
     // Draw Icon
     Canvas.SetPos(TempX + IconBorder * Height, TempY + IconBorder * Height);
-    Canvas.DrawTile(class'PerkList'.default.perks[CurIndex].default.OnHUDIcon, IconSize, IconSize, 0, 0, 256, 256);
+    Canvas.DrawTile(kfrLRepInfo.pack.getPerks()[CurIndex].default.OnHUDIcon, IconSize, IconSize, 0, 0, 256, 256);
 
     TempX+= IconSize + (IconToInfoSpacing * Width);
     TempY+= TextTopOffset * Height + ItemBorder * Height;

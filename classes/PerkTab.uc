@@ -6,11 +6,11 @@ function bool OnSaveButtonClicked(GUIComponent Sender) {
 
     PC = PlayerOwner();
 
-    if (KFPlayerController(PC).bChangedVeterancyThisWave && KFPlayerController(PC).SelectedVeterancy != class'PerkList'.default.perks[lb_PerkSelect.GetIndex()]) {
+    kfrLRepInfo= class'KFRLinkedReplicationInfo'.static.findLRI(PC.PlayerReplicationInfo);
+    if (KFPlayerController(PC).bChangedVeterancyThisWave && KFPlayerController(PC).SelectedVeterancy != kfrLRepInfo.pack.getPerks()[lb_PerkSelect.GetIndex()]) {
         l_ChangePerkOncePerWave.SetVisibility(true);
     }
     else {
-        kfrLRepInfo= class'KFRLinkedReplicationInfo'.static.findLRI(PC.PlayerReplicationInfo);
         KFPlayerController(PC).SelectedVeterancy = kfrLRepInfo.pack.getPerks()[lb_PerkSelect.GetIndex()];
         kfrLRepInfo.changePerk(KFPlayerController(PC).SelectedVeterancy, kfrLRepInfo.pack.getMaxPerkLevel());
     }
