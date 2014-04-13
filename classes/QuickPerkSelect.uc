@@ -1,13 +1,15 @@
 class QuickPerkSelect extends KFGui.KFQuickPerkSelect;
 
 function bool InternalOnClick(GUIComponent Sender) {
+    local KFRLinkedReplicationInfo kfrLRepInfo;
     local PlayerController PC;
 
     // Grab the Player Controller for later use
     PC= PlayerOwner();
     if (Sender.IsA('KFIndexedGUIImage') && !KFPlayerController(PC).bChangedVeterancyThisWave) {
-        KFPlayerController(PC).SelectedVeterancy = class'PerkList'.default.perks[KFIndexedGUIImage(Sender).Index];
-        PC.ConsoleCommand("mutate perkchange "$KFIndexedGUIImage(Sender).Index);
+        kfrLRepInfo= class'KFRLinkedReplicationInfo'.static.findLRI(PC.PlayerReplicationInfo);
+        KFPlayerController(PC).SelectedVeterancy = kfrLRepInfo.pack.getPerks()[KFIndexedGUIImage(Sender).Index];
+        kfrLRepInfo.changePerk(KFPlayerController(PC).SelectedVeterancy, kfrLRepInfo.pack.getMaxPerkLevel());
         bPerkChange = true;
     }
     

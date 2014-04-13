@@ -3,7 +3,6 @@ class KFRInteraction extends Interaction;
 var array<class<Pickup> > itemsToRemove;
 var string buyMenuClass, lobbyMenuClass;
 
-
 function removeItems() {
     local LevelRules it;
     local int i;
@@ -21,17 +20,19 @@ event NotifyLevelChange() {
 }
 
 function Tick (float DeltaTime) {
+    local KFRLinkedReplicationInfo kfrLRepInfo;
     local KFGUIController guiController;
     local int i;
 
     guiController= KFGUIController(ViewportOwner.GUIController);
     if (guiController != none && guiController.ActivePage != none && guiController.ActivePage.class == class'KFGui.LobbyMenu') {
+        kfrLRepInfo= class'KFRLinkedReplicationInfo'.static.findLRI(ViewportOwner.Actor.PlayerReplicationInfo);
         KFPlayerController(ViewportOwner.Actor).LobbyMenuClassString= lobbyMenuClass;
         ViewportOwner.Actor.ClientCloseMenu(true, true);
         KFPlayerController(ViewportOwner.Actor).ShowLobbyMenu();
-        i= Rand(class'PerkList'.default.perks.Length);
-        KFPlayerController(ViewportOwner.Actor).SelectedVeterancy= class'PerkList'.default.perks[i];
-        ViewportOwner.Actor.ConsoleCommand("mutate perkchange "$i);
+        i= Rand(kfrLRepInfo.pack.getPerks().Length);
+        KFPlayerController(ViewportOwner.Actor).SelectedVeterancy= kfrLRepInfo.pack.getPerks()[i];
+        kfrLRepInfo.changePerk(KFPlayerController(ViewportOwner.Actor).SelectedVeterancy, kfrLRepInfo.pack.getMaxPerkLevel());
         bRequiresTick= false;
     }
 }

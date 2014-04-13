@@ -1,12 +1,17 @@
 class KFRLinkedReplicationInfo extends LinkedReplicationInfo;
 
+var RollbackPack pack;
+
 replication {
     reliable if (Role != ROLE_Authority)
        buyWeapon,changePerk;
 }
 
-simulated function BuyWeapon();
+simulated function buyWeapon();
 simulated function changePerk(class<KFVeterancyTypes> perk, int level);
+function changeRandomPerk() {
+    changePerk(pack.getPerks()[Rand(pack.getPerks().Length)], pack.getMaxPerkLevel());
+}
 
 static function KFRLinkedReplicationInfo findLRI(PlayerReplicationInfo pri) {
     local LinkedReplicationInfo lriIt;

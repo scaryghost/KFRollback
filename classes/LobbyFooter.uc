@@ -1,6 +1,7 @@
 class LobbyFooter extends KFGui.LobbyFooter;
 
 function bool OnFooterClick(GUIComponent Sender) {
+    local KFRLinkedReplicationInfo kfrLRepInfo;
     local GUIController C;
     local PlayerController PC;
 
@@ -15,7 +16,8 @@ function bool OnFooterClick(GUIComponent Sender) {
         if (PC.PlayerReplicationInfo.Team != none) {
             if (PC.Level.NetMode == NM_Standalone || !PC.PlayerReplicationInfo.bReadyToPlay) {
                 if (KFPlayerController(PC) != none) {
-                    PC.ConsoleCommand("mutate perkchange "$KFPlayerController(PC).SelectedVeterancy.default.PerkIndex);
+                    kfrLRepInfo= class'KFRLinkedReplicationInfo'.static.findLRI(PC.PlayerReplicationInfo);
+                    kfrLRepInfo.changePerk(KFPlayerController(PC).SelectedVeterancy, kfrLRepInfo.pack.getMaxPerkLevel());
                 }
 
                 //Set Ready

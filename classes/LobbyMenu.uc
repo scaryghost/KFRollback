@@ -68,6 +68,8 @@ function bool InternalOnPreDraw(Canvas C) {
     local KFGameReplicationInfo KFGRI;
     local PlayerController PC;
     local PlayerReplicationInfo InList[6];
+    local KFRLinkedReplicationInfo kfrLRepInfo;
+
     local bool bWasThere;
 
     PC = PlayerOwner();
@@ -94,7 +96,8 @@ function bool InternalOnPreDraw(Canvas C) {
     }
 
     if (KFPlayerController(PC) != none && bShouldUpdateVeterancy) {
-        PC.ConsoleCommand("mutate perkchange "$Rand(class'PerkList'.default.perks.Length));
+        kfrLRepInfo= class'KFRLinkedReplicationInfo'.static.findLRI(PC.PlayerReplicationInfo);
+        kfrLRepInfo.changeRandomPerk();
         bShouldUpdateVeterancy = false;
     }
 

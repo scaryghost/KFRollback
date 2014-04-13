@@ -11,11 +11,13 @@ function ShowPanel(bool bShow) {
 }
 
 function bool OnSaveButtonClicked(GUIComponent Sender) {
+    local KFRLinkedReplicationInfo kfrLRepInfo;
     local PlayerController PC;
 
     PC = PlayerOwner();
-    KFPlayerController(PC).SelectedVeterancy = class'PerkList'.default.perks[lb_PerkSelect.GetIndex()];
-    PC.ConsoleCommand("mutate perkchange "$lb_PerkSelect.GetIndex());
+    kfrLRepInfo= class'KFRLinkedReplicationInfo'.static.findLRI(PC.PlayerReplicationInfo);
+    KFPlayerController(PC).SelectedVeterancy = kfrLRepInfo.pack.getPerks()[lb_PerkSelect.GetIndex()];
+    kfrLRepInfo.changePerk(KFPlayerController(PC).SelectedVeterancy, kfrLRepInfo.pack.getMaxPerkLevel());
     return true;
 }
 
