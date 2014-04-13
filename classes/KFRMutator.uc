@@ -41,8 +41,15 @@ function Timer() {
 }
 
 function bool CheckReplacement(Actor Other, out byte bSuperRelevant) {
-    if (KFPlayerReplicationInfo(Other) != none) {
-        KFPlayerReplicationInfo(Other).ClientVeteranSkillLevel= pack.getMaxPerkLevel();
+    local KFPlayerReplicationInfo kfpRepInfo;
+    local KFRLinkedReplicationInfo kfrLRepInfo;
+
+    kfpRepInfo= KFPlayerReplicationInfo(Other);
+    if (kfpRepInfo != none) {
+        kfrLRepInfo= kfpRepInfo.Spawn(class'KFRLinkedReplicationInfo', kfpRepInfo.Owner);
+        kfrLRepInfo.NextReplicationInfo= kfpRepInfo.CustomReplicationInfo;
+        kfpRepInfo.CustomReplicationInfo= kfrLRepInfo;
+        kfpRepInfo.ClientVeteranSkillLevel= pack.getMaxPerkLevel();
     } else if (Weapon(Other) != none) {
         return pack.replaceWeapon(Weapon(Other));
     } else if (KFWeaponPickup(Other) != none) {
