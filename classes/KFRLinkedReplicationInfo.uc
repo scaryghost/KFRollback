@@ -7,7 +7,7 @@ var localized string perkChangeTraderMsg;
 
 replication {
     reliable if (Role != ROLE_Authority)
-       buyWeapon,changePerk,sellWeapon;
+       buyWeapon, changePerk, sellWeapon;
 }
 
 function buyWeapon(Class<Weapon> WClass, float ItemWeight) {
@@ -16,7 +16,6 @@ function buyWeapon(Class<Weapon> WClass, float ItemWeight) {
     local KFPlayerController kfPC;
     local Inventory I, J;
     local float Price;
-    local bool bIsDualWeapon, bHasDual9mms, bHasDualHCs, bHasDualRevolvers;
 
     kfPC= KFPlayerController(Owner);
     if ( !KFPawn(kfPC.Pawn).CanBuyNow() || Class<KFWeapon>(WClass) == none || Class<KFWeaponPickup>(WClass.Default.PickupClass) == none ) {
@@ -35,8 +34,7 @@ function buyWeapon(Class<Weapon> WClass, float ItemWeight) {
             !KFSteamStatsAndAchievements(kfPC.PlayerReplicationInfo.SteamStatsAndAchievements).PlayerOwnsWeaponDLC(Class<KFWeapon>(WClass).Default.AppID)) {
             return;
         }
-    }
-    else if (Class<KFWeapon>(WClass).Default.UnlockedByAchievement != -1) {
+    } else if (Class<KFWeapon>(WClass).Default.UnlockedByAchievement != -1) {
         if (KFSteamStatsAndAchievements(kfPC.PlayerReplicationInfo.SteamStatsAndAchievements) == none ||
              KFSteamStatsAndAchievements(kfPC.PlayerReplicationInfo.SteamStatsAndAchievements).Achievements[Class<KFWeapon>(WClass).Default.UnlockedByAchievement].bCompleted != 1 ) {
             return;
