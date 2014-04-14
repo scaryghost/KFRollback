@@ -3,11 +3,27 @@ class KFRLinkedReplicationInfo extends LinkedReplicationInfo
 
 var KFRMutator mut;
 var RollbackPack pack;
+var string packName;
 var localized string perkChangeTraderMsg;
 
 replication {
     reliable if (Role != ROLE_Authority)
        buyWeapon, changePerk, sellWeapon;
+    reliable if (Role == ROLE_Authority)
+        packName;
+}
+
+simulated function Tick(float DeltaTime) {
+    local KFLevelRules it;
+
+    super.Tick(DeltaTime);
+
+    if (pack == None && Role < ROLE_Authority) {
+        pack= new class<RollbackPack>(DynamicLoadObject(packName, class'Class'));
+        foreach DynamicActors(class'KFMod.KFLevelRules', it) {
+            it.ItemForSale= pack.getWeaponPickups();
+        }
+    }
 }
 
 function buyWeapon(Class<Weapon> WClass, float ItemWeight) {
@@ -173,6 +189,9 @@ function changeRandomPerk() {
 static function KFRLinkedReplicationInfo findLRI(PlayerReplicationInfo pri) {
     local LinkedReplicationInfo lriIt;
 
+    if (pri == None) {
+        return None;
+    }
     for(lriIt= pri.CustomReplicationInfo; lriIt != None && lriIt.class != class'KFRLinkedReplicationInfo';
             lriIt= lriIt.NextReplicationInfo) {
     }

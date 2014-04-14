@@ -7,20 +7,11 @@ var KFGameType gameType;
 var string interactionClass, loginMenuClass;
 var RollbackPack pack;
 
-replication {
-    reliable if (Role == ROLE_Authority)
-        rollbackPackName;
-}
-
 simulated function Tick(float DeltaTime) {
     local PlayerController localController;
-    local RollbackPack localPack;
-
     localController= Level.GetLocalPlayerController();
     if (localController != none) {
         localController.Player.InteractionMaster.AddInteraction(interactionClass, localController.Player);
-        localPack= new class<RollbackPack>(DynamicLoadObject(rollbackPackName, class'Class'));
-        class'KFRLinkedReplicationInfo'.static.findLRI(localController.PlayerReplicationInfo).pack= localPack;
     }
     Disable('Tick');
 }
@@ -52,10 +43,12 @@ function bool CheckReplacement(Actor Other, out byte bSuperRelevant) {
     local string replacement;
 
     kfpRepInfo= KFPlayerReplicationInfo(Other);
-    if (kfpRepInfo != none) {
+    if (kfpRepInfo != none && kfpRepInfo.Owner != None) {
         kfrLRepInfo= kfpRepInfo.Spawn(class'KFRLinkedReplicationInfo', kfpRepInfo.Owner);
         kfrLRepInfo.mut= self;
         kfrLRepInfo.NextReplicationInfo= kfpRepInfo.CustomReplicationInfo;
+        kfrLRepInfo.packName= rollbackPackName;
+        kfrLRepInfo.pack= pack;
         kfpRepInfo.CustomReplicationInfo= kfrLRepInfo;
         kfpRepInfo.ClientVeteranSkillLevel= pack.getMaxPerkLevel();
     } else if (Weapon(Other) != none || KFWeaponPickup(Other) != none || KFAmmoPickup(Other) != none) {
