@@ -2,6 +2,7 @@ class KFRMutator extends Mutator
     config(KFRollBack);
 
 var() config string rollbackPackName;
+var() config array<string> rollbackPacks;
 
 var KFGameType gameType;
 var string interactionClass, loginMenuClass;
@@ -72,14 +73,14 @@ function weaponSpawned(Inventory I) {
 
 static function FillPlayInfo(PlayInfo PlayInfo) {
     super.FillPlayInfo(PlayInfo);
-
-    PlayInfo.AddSetting("KFRollback", "rollbackPackName","Rollback Pack Name", 0, 1, "Text");
+    PlayInfo.AddSetting(default.GroupName, "rollbackPackName", "Rollback Pack", 0, 1, "Select", 
+            class'GUI'.static.JoinArray(default.rollbackPacks, ";"), "Xb",,true);
 }
 
 static event string GetDescriptionText(string property) {
     switch(property) {
         case "rollbackPackName":
-            return "Classname of the rollback pack to use";
+            return "Select the rollback pack to use";
         default:
             return Super.GetDescriptionText(property);
     }
@@ -88,8 +89,8 @@ static event string GetDescriptionText(string property) {
 
 defaultproperties {
     GroupName="KFRollback"
-    FriendlyName="KF Rollback v2.0.1"
-    Description="Rolls back the game to 2009, mixing in bits of the Level Up, Heavy Metal, and 2010 Xmas updates"
+    FriendlyName="KF Rollback v3.0"
+    Description="Reverts the weapons, perks, and specimens to a previous state"
 
     RemoteRole= ROLE_SimulatedProxy
     bAlwaysRelevant= true
