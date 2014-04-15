@@ -19,23 +19,23 @@ simulated function Tick(float DeltaTime) {
 
 
 function PostBeginPlay() {
-    local class<RollbackPack> packClass;
+    local int i;
+    local array<string> packages;
+
     gameType= KFGameType(Level.Game);
     if (gameType == none) {
         Destroy();
         return;
     }
 
+    pack= new class<RollbackPack>(DynamicLoadObject(rollbackPackName, class'Class'));
+    packages= pack.getPackages();
     AddToPackageMap();
+    for(i= 0; i < packages.Length; i++) {
+        AddToPackageMap(packages[i]);
+    }
+    
     DeathMatch(Level.Game).LoginMenuClass= loginMenuClass;
-    packClass= class<RollbackPack>(DynamicLoadObject(rollbackPackName, class'Class'));
-    pack= new packClass;
-
-    SetTimer(1.0, false);
-}
-
-function Timer() {
-    gameType.KFLRules.ItemForSale= pack.getWeaponPickups();
 }
 
 function bool CheckReplacement(Actor Other, out byte bSuperRelevant) {
@@ -58,6 +58,8 @@ function bool CheckReplacement(Actor Other, out byte bSuperRelevant) {
             ReplaceWith(Other, replacement);
             return false;
         }
+    } else if (KFLevelRules(Other) != none) {
+        KFLevelRules(Other).ItemForSale= pack.getWeaponPickups();
     }
 
     return super.CheckReplacement(Other, bSuperRelevant);
@@ -85,7 +87,6 @@ static event string GetDescriptionText(string property) {
             return Super.GetDescriptionText(property);
     }
 }
-
 
 defaultproperties {
     GroupName="KFRollback"
