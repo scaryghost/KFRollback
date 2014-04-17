@@ -22,7 +22,6 @@ event NotifyLevelChange() {
 function Tick (float DeltaTime) {
     local KFRLinkedReplicationInfo kfrLRepInfo;
     local KFGUIController guiController;
-    local int i;
 
     guiController= KFGUIController(ViewportOwner.GUIController);
     if (guiController != none && guiController.ActivePage != none && guiController.ActivePage.class == class'KFGui.LobbyMenu') {
@@ -30,9 +29,7 @@ function Tick (float DeltaTime) {
         KFPlayerController(ViewportOwner.Actor).LobbyMenuClassString= lobbyMenuClass;
         ViewportOwner.Actor.ClientCloseMenu(true, true);
         KFPlayerController(ViewportOwner.Actor).ShowLobbyMenu();
-        i= Rand(kfrLRepInfo.pack.getPerks().Length);
-        KFPlayerController(ViewportOwner.Actor).SelectedVeterancy= kfrLRepInfo.pack.getPerks()[i];
-        kfrLRepInfo.changePerk(KFPlayerController(ViewportOwner.Actor).SelectedVeterancy, kfrLRepInfo.desiredPerkLevel);
+        kfrLRepInfo.changeRandomPerk();
         bRequiresTick= false;
     }
 }

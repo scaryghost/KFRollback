@@ -24,11 +24,7 @@ function ShowPanel(bool bShow) {
 }
 
 function bool OnSaveButtonClicked(GUIComponent Sender) {
-    local PlayerController PC;
-
-    PC = PlayerOwner();
-    KFPlayerController(PC).SelectedVeterancy = kfrLRepInfo.pack.getPerks()[lb_PerkSelect.GetIndex()];
-    kfrLRepInfo.changePerk(KFPlayerController(PC).SelectedVeterancy, kfrLRepInfo.desiredPerkLevel);
+    kfrLRepInfo.changePerk(lb_PerkSelect.GetIndex());
     return true;
 }
 

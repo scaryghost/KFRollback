@@ -9,7 +9,7 @@ var int desiredPerkLevel;
 
 replication {
     reliable if (Role != ROLE_Authority)
-       buyWeapon, changePerk, sellWeapon;
+       buyWeapon, sendPerkToServer, sellWeapon;
     reliable if (Role == ROLE_Authority)
         packName;
 }
@@ -155,7 +155,7 @@ simulated function sellWeapon(class<Weapon> WClass) {
     }
 }
 
-simulated function changePerk(class<KFVeterancyTypes> perk, int level) {
+simulated function sendPerkToServer(class<KFVeterancyTypes> perk, int level) {
     local KFPlayerController kfPC;
     local KFPlayerReplicationInfo kfRepInfo;
 
@@ -185,8 +185,17 @@ simulated function changePerk(class<KFVeterancyTypes> perk, int level) {
             }
     }
 }
+
+function changePerk(int perkIndex) {
+    local KFPlayerController kfPC;
+
+    kfPC= KFPlayerController(Owner);
+    kfPC.SelectedVeterancy= pack.getPerks()[perkIndex];
+    sendPerkToServer(kfPC.SelectedVeterancy, desiredPerkLevel);
+}
+
 function changeRandomPerk() {
-    changePerk(pack.getPerks()[Rand(pack.getPerks().Length)], desiredPerkLevel);
+    changePerk(Rand(pack.getPerks().Length));
 }
 
 static function KFRLinkedReplicationInfo findLRI(PlayerReplicationInfo pri) {
