@@ -15,11 +15,18 @@ function InitComponent(GUIController MyController, GUIComponent MyOwner) {
 }
 
 function ShowPanel(bool bShow) {
-    super.ShowPanel(bShow);
+    super(MidGamePanel).ShowPanel(bShow);
 
     if (bShow && PlayerOwner() != none) {
         lb_PerkSelect.List.InitList(KFStatsAndAchievements);
         InitGRI();
+    }
+}
+
+function InternalOnChange(GUIComponent sender) {
+    if (sender == perkLevels) {
+        kfrLRepInfo.desiredPerkLevel= perkLevels.GetValue();
+        OnPerkSelected(sender);
     }
 }
 
@@ -47,10 +54,10 @@ defaultproperties {
     Begin Object Class=GUISectionBackground Name=PerkConfig
         bFillClient=True
         Caption="Perk Configuration"
-        WinTop=0.379668
-        WinLeft=0.660121
-        WinWidth=0.339980
-        WinHeight=0.352235
+        WinTop=0.392889
+        WinLeft=0.486700
+        WinWidth=0.490282
+        WinHeight=0.415466
         OnPreDraw=PerkConfig.InternalPreDraw
     End Object
     i_BGPerkNextLevel=GUISectionBackground'KFRollback.MidGamePerksTab.PerkConfig'
@@ -58,7 +65,7 @@ defaultproperties {
     Begin Object class=moNumericEdit Name=PerkLevelsBox
         Caption="Perk Level"
         Hint="Set perk level"
-        OnChange=ProfileTab.InternalOnChange
+        OnChange=MidGamePerksTab.InternalOnChange
     End Object
     perkLevels=moNumericEdit'KFRollback.MidGamePerksTab.PerkLevelsBox'
 }
