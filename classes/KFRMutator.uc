@@ -50,8 +50,9 @@ function bool CheckReplacement(Actor Other, out byte bSuperRelevant) {
         kfrLRepInfo.NextReplicationInfo= kfpRepInfo.CustomReplicationInfo;
         kfrLRepInfo.packName= rollbackPackName;
         kfrLRepInfo.pack= pack;
+        kfrLRepInfo.desiredPerkLevel= pack.getMaxPerkLevel();
         kfpRepInfo.CustomReplicationInfo= kfrLRepInfo;
-        kfpRepInfo.ClientVeteranSkillLevel= pack.getMaxPerkLevel();
+        kfpRepInfo.ClientVeteranSkillLevel= kfrLRepInfo.desiredPerkLevel;
     } else if (Weapon(Other) != none || KFWeaponPickup(Other) != none || KFAmmoPickup(Other) != none) {
         replacement= pack.replaceActor(Other);
         if (Len(replacement) != 0) {

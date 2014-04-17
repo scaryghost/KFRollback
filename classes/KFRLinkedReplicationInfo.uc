@@ -11,7 +11,7 @@ replication {
     reliable if (Role != ROLE_Authority)
        buyWeapon, sendPerkToServer, sellWeapon;
     reliable if (Role == ROLE_Authority)
-        packName;
+        packName, desiredPerkLevel;
 }
 
 simulated function Tick(float DeltaTime) {
@@ -24,8 +24,6 @@ simulated function Tick(float DeltaTime) {
         foreach DynamicActors(class'KFMod.KFLevelRules', it) {
             it.ItemForSale= pack.getWeaponPickups();
         }
-        //This should initially match ClientVeteranSkillLevel set in CheckReplacement
-        desiredPerkLevel= pack.getMaxPerkLevel();
     }
 }
 
