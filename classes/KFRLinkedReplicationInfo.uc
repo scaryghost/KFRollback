@@ -5,6 +5,7 @@ var KFRMutator mut;
 var RollbackPack pack;
 var string packName;
 var localized string perkChangeTraderMsg;
+var int desiredPerkLevel;
 
 replication {
     reliable if (Role != ROLE_Authority)
@@ -23,6 +24,8 @@ simulated function Tick(float DeltaTime) {
         foreach DynamicActors(class'KFMod.KFLevelRules', it) {
             it.ItemForSale= pack.getWeaponPickups();
         }
+        //This should initially match ClientVeteranSkillLevel set in CheckReplacement
+        desiredPerkLevel= pack.getMaxPerkLevel();
     }
 }
 
@@ -172,7 +175,7 @@ simulated function changePerk(class<KFVeterancyTypes> perk, int level) {
                 }
 
                 kfRepInfo.ClientVeteranSkill = kfPC.SelectedVeterancy;
-                kfRepInfo.ClientVeteranSkillLevel= pack.getMaxPerkLevel();
+                kfRepInfo.ClientVeteranSkillLevel= level;
 
                 if( KFHumanPawn(kfPC.Pawn) != none ) {
                     KFHumanPawn(kfPC.Pawn).VeterancyChanged();
@@ -183,7 +186,7 @@ simulated function changePerk(class<KFVeterancyTypes> perk, int level) {
     }
 }
 function changeRandomPerk() {
-    changePerk(pack.getPerks()[Rand(pack.getPerks().Length)], pack.getMaxPerkLevel());
+    changePerk(pack.getPerks()[Rand(pack.getPerks().Length)], desiredPerkLevel);
 }
 
 static function KFRLinkedReplicationInfo findLRI(PlayerReplicationInfo pri) {

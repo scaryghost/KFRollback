@@ -2,6 +2,18 @@ class ProfileTab extends KFTab_Profile;
 
 var KFRLinkedReplicationInfo kfrLRepInfo;
 var string modelSelectClass;
+var automated moNumericEdit perkLevels;
+
+function InitComponent(GUIController MyController, GUIComponent MyOwner) {
+    super.InitComponent(MyController, MyOwner);
+
+    
+    kfrLRepInfo= class'KFRLinkedReplicationInfo'.static.findLRI(PlayerOwner().PlayerReplicationInfo);
+    perkLevels.Setup(0, kfrLRepInfo.pack.getMaxPerkLevel(), 1);
+    perkLevels.SetValue(kfrLRepInfo.desiredPerkLevel);
+    i_BGPerkNextLevel.UnManageComponent(lb_PerkProgress);
+    i_BGPerkNextLevel.ManageComponent(perkLevels);
+}
 
 function ShowPanel(bool bShow) {
     if (bShow) {
@@ -11,8 +23,6 @@ function ShowPanel(bool bShow) {
         }
 
         lb_PerkSelect.List.InitList(KFStatsAndAchievements);
-        lb_PerkProgress.List.InitList();
-        kfrLRepInfo= class'KFRLinkedReplicationInfo'.static.findLRI(PlayerOwner().PlayerReplicationInfo);
     }
 
     lb_PerkSelect.SetPosition(i_BGPerks.WinLeft + 6.0 / float(Controller.ResX),
@@ -28,6 +38,13 @@ function bool PickModel(GUIComponent Sender) {
     }
 
     return true;
+}
+
+function InternalOnChange(GUIComponent sender) {
+    if (sender == perkLevels) {
+        kfrLRepInfo.desiredPerkLevel= perkLevels.GetValue();
+        OnPerkSelected(sender);
+    }
 }
 
 function SaveSettings() {
@@ -52,11 +69,11 @@ function SaveSettings() {
     }
 
     KFPlayerController(PC).SelectedVeterancy = kfrLRepInfo.pack.getPerks()[lb_PerkSelect.GetIndex()];
-    kfrLRepInfo.changePerk(KFPlayerController(PC).SelectedVeterancy, kfrLRepInfo.pack.getMaxPerkLevel());
+    kfrLRepInfo.changePerk(KFPlayerController(PC).SelectedVeterancy, kfrLRepInfo.desiredPerkLevel);
 }
 
 function OnPerkSelected(GUIComponent Sender) {
-    lb_PerkEffects.SetContent(kfrLRepInfo.pack.getPerks()[lb_PerkSelect.GetIndex()].default.LevelEffects[KFPlayerReplicationInfo(PlayerOwner().PlayerReplicationInfo).ClientVeteranSkillLevel]);
+    lb_PerkEffects.SetContent(kfrLRepInfo.pack.getPerks()[lb_PerkSelect.GetIndex()].default.LevelEffects[kfrLRepInfo.desiredPerkLevel]);
     lb_PerkProgress.List.PerkChanged(KFStatsAndAchievements, lb_PerkSelect.GetIndex());
 }
 
@@ -73,13 +90,21 @@ defaultproperties {
     End Object
     lb_PerkSelect=PerkSelectBox
 
-    Begin Object Class=KFPerkProgressListBox Name=PerkProgressBox
-        OnCreateComponent=PerkProgressBox.InternalOnCreateComponent
-        WinTop=0.439668
-        WinLeft=0.670121
-        WinWidth=0.319980
-        WinHeight=0.292235
-        DefaultListClass="KFRollback.PerkProgressList"
+    Begin Object Class=GUISectionBackground Name=PerkConfig
+        bFillClient=True
+        Caption="Perk Configuration"
+        WinTop=0.379668
+        WinLeft=0.660121
+        WinWidth=0.339980
+        WinHeight=0.352235
+        OnPreDraw=PerkConfig.InternalPreDraw
     End Object
-    lb_PerkProgress=PerkProgressBox
+    i_BGPerkNextLevel=GUISectionBackground'KFRollback.ProfileTab.PerkConfig'
+
+    Begin Object class=moNumericEdit Name=PerkLevelsBox
+        Caption="Perk Level"
+        Hint="Set perk level"
+        OnChange=ProfileTab.InternalOnChange
+    End Object
+    perkLevels=moNumericEdit'KFRollback.ProfileTab.PerkLevelsBox'
 }

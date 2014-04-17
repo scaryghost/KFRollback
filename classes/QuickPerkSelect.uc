@@ -15,7 +15,7 @@ function bool InternalOnClick(GUIComponent Sender) {
     PC= PlayerOwner();
     if (Sender.IsA('KFIndexedGUIImage') && !KFPlayerController(PC).bChangedVeterancyThisWave) {
         KFPlayerController(PC).SelectedVeterancy = kfrLRepInfo.pack.getPerks()[KFIndexedGUIImage(Sender).Index];
-        kfrLRepInfo.changePerk(KFPlayerController(PC).SelectedVeterancy, kfrLRepInfo.pack.getMaxPerkLevel());
+        kfrLRepInfo.changePerk(KFPlayerController(PC).SelectedVeterancy, kfrLRepInfo.desiredPerkLevel);
         bPerkChange = true;
     }
     

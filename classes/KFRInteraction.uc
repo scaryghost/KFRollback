@@ -32,7 +32,7 @@ function Tick (float DeltaTime) {
         KFPlayerController(ViewportOwner.Actor).ShowLobbyMenu();
         i= Rand(kfrLRepInfo.pack.getPerks().Length);
         KFPlayerController(ViewportOwner.Actor).SelectedVeterancy= kfrLRepInfo.pack.getPerks()[i];
-        kfrLRepInfo.changePerk(KFPlayerController(ViewportOwner.Actor).SelectedVeterancy, kfrLRepInfo.pack.getMaxPerkLevel());
+        kfrLRepInfo.changePerk(KFPlayerController(ViewportOwner.Actor).SelectedVeterancy, kfrLRepInfo.desiredPerkLevel);
         bRequiresTick= false;
     }
 }

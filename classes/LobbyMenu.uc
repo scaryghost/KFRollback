@@ -231,7 +231,7 @@ function DrawPerk(Canvas Canvas) {
         drawn= true;
     }
 
-    LevelIndex= KFPlayerReplicationInfo(PlayerOwner().PlayerReplicationInfo).ClientVeteranSkillLevel;
+    LevelIndex= kfrLRepInfo.desiredPerkLevel;
     PerkName=  KFPlayerController(PlayerOwner()).SelectedVeterancy.default.VeterancyName;
     PerkLevelString= LvAbbrString @ LevelIndex;
     PerkProgress= 0;

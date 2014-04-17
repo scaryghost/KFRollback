@@ -17,7 +17,7 @@ function bool OnFooterClick(GUIComponent Sender) {
             if (PC.Level.NetMode == NM_Standalone || !PC.PlayerReplicationInfo.bReadyToPlay) {
                 if (KFPlayerController(PC) != none) {
                     kfrLRepInfo= class'KFRLinkedReplicationInfo'.static.findLRI(PC.PlayerReplicationInfo);
-                    kfrLRepInfo.changePerk(KFPlayerController(PC).SelectedVeterancy, kfrLRepInfo.pack.getMaxPerkLevel());
+                    kfrLRepInfo.changePerk(KFPlayerController(PC).SelectedVeterancy, kfrLRepInfo.desiredPerkLevel);
                 }
 
                 //Set Ready
