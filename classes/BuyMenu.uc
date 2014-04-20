@@ -45,10 +45,10 @@ defaultproperties {
     End Object
 
     Begin Object class=GUIComboBox Name=QS
-        WinTop=0.011906
-        WinLeft=0.008008
-        WinWidth=0.316601
-        WinHeight=0.082460
+        WinTop=0.029400
+        WinLeft=0.09000
+        WinWidth=0.216601
+        WinHeight=0.030000
         MyListBox=ListBox1
     End Object
     perkSelect=QS
