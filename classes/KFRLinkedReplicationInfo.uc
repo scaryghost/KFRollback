@@ -160,27 +160,27 @@ simulated function sendPerkToServer(class<KFVeterancyTypes> perk, int level) {
     kfPC= KFPlayerController(Owner);
     kfRepInfo= KFPlayerReplicationInfo(kfPC.PlayerReplicationInfo);
     if (kfPC != none && kfRepInfo != none) {
-            kfPC.SelectedVeterancy= perk;
+        kfPC.SelectedVeterancy= perk;
 
-            if (KFGameReplicationInfo(kfPC.GameReplicationInfo).bWaveInProgress && kfPC.SelectedVeterancy != kfRepInfo.ClientVeteranSkill) {
-                kfPC.ClientMessage(perkChangeTraderMsg);
-            } else if (!kfPC.bChangedVeterancyThisWave) {
-                if (kfPC.SelectedVeterancy != kfRepInfo.ClientVeteranSkill) {
-                    kfPC.ClientMessage(Repl(kfPC.YouAreNowPerkString, "%Perk%", kfPC.SelectedVeterancy.Default.VeterancyName));
-                }
-                if (kfPC.GameReplicationInfo.bMatchHasBegun) {
-                    kfPC.bChangedVeterancyThisWave = true;
-                }
-
-                kfRepInfo.ClientVeteranSkill = kfPC.SelectedVeterancy;
-                kfRepInfo.ClientVeteranSkillLevel= level;
-
-                if( KFHumanPawn(kfPC.Pawn) != none ) {
-                    KFHumanPawn(kfPC.Pawn).VeterancyChanged();
-                }    
-            } else {
-                kfPC.ClientMessage(kfPC.PerkChangeOncePerWaveString);
+        if (KFGameReplicationInfo(kfPC.GameReplicationInfo).bWaveInProgress && kfPC.SelectedVeterancy != kfRepInfo.ClientVeteranSkill) {
+            kfPC.ClientMessage(perkChangeTraderMsg);
+        } else if (!kfPC.bChangedVeterancyThisWave) {
+            if (kfPC.SelectedVeterancy != kfRepInfo.ClientVeteranSkill) {
+                kfPC.ClientMessage(Repl(kfPC.YouAreNowPerkString, "%Perk%", kfPC.SelectedVeterancy.Default.VeterancyName));
             }
+            if (kfPC.GameReplicationInfo.bMatchHasBegun) {
+                kfPC.bChangedVeterancyThisWave = true;
+            }
+
+            kfRepInfo.ClientVeteranSkill = kfPC.SelectedVeterancy;
+            kfRepInfo.ClientVeteranSkillLevel= level;
+
+            if( KFHumanPawn(kfPC.Pawn) != none ) {
+                KFHumanPawn(kfPC.Pawn).VeterancyChanged();
+            }    
+        } else {
+            kfPC.ClientMessage(kfPC.PerkChangeOncePerWaveString);
+        }
     }
 }
 

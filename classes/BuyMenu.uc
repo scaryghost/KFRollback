@@ -1,5 +1,6 @@
 class BuyMenu extends GUIBuyMenu_Story;
 
+var bool ignoreChange;
 var automated GUIComboBox perkSelect;
 var KFRLinkedReplicationInfo kfrLRepInfo;
 
@@ -20,11 +21,17 @@ function InitComponent(GUIController MyController, GUIComponent MyOwner) {
     } else {
         super(GUIBuyMenu).InitComponent(MyController, MyOwner);
     }
+
     kfrLRepInfo= class'KFRLinkedReplicationInfo'.static.findLRI(PlayerOwner().PlayerReplicationInfo);
     perks= kfrLRepInfo.pack.getPerks();
     for(i= 0; i < perks.Length; i++) {
         perkSelect.AddItem(perks[i].default.VeterancyName, perks[i].default.OnHUDIcon);
+        if (KFPlayerReplicationInfo(PlayerOwner().PlayerReplicationInfo).ClientVeteranSkill == perks[i]) {
+            log("Setting ignore to true");
+            perkSelect.SetIndex(i);
+        }
     }
+    ignoreChange= false;
 }
 
 function FillInfoFromVolume() {
@@ -33,9 +40,18 @@ function FillInfoFromVolume() {
     }
 }
 
+function InternalOnChange(GUIComponent sender) {
+    if (!ignoreChange && sender == perkSelect) {
+        kfrLRepInfo.changePerk(perkSelect.GetIndex());
+        perkSelect.DisableMe();
+    }
+}
+
 defaultproperties {
+    ignoreChange=true
+
     Begin Object Class=GUIListBox Name=ListBox1
-        OnCreateComponent=ListBox1.InternalOnCreateComponent
+    OnCreateComponent=ListBox1.InternalOnCreateComponent
         StyleName="ComboListBox"
         RenderWeight=0.700000
         bTabStop=False
@@ -50,6 +66,7 @@ defaultproperties {
         WinWidth=0.216601
         WinHeight=0.030000
         MyListBox=ListBox1
+        OnChange=BuyMenu.InternalOnChange
     End Object
     perkSelect=QS
     QuickPerkSelect=None
