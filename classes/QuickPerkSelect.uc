@@ -1,99 +1,81 @@
-class QuickPerkSelect extends KFGui.KFQuickPerkSelect;
+class QuickPerkSelect extends GUIMultiComponent;
 
+var Texture perkBack;
 var KFRLinkedReplicationInfo kfrLRepInfo;
+var automated GUIComboBox perkSelect;
 
-event InitComponent(GUIController MyController, GUIComponent MyOwner) {
-    super.InitComponent(MyController, MyOwner);
-    
+event Opened(GUIComponent Sender) {
+    local int i;
+    local array<class<KFVeterancyTypes> > perks;
+    local class<KFVeterancyTypes> playerPerk;
+
+    super.Opened(Sender);
+
     kfrLRepInfo= class'KFRLinkedReplicationInfo'.static.findLRI(PlayerOwner().PlayerReplicationInfo);
+    perks= kfrLRepInfo.pack.getPerks();
+    playerPerk= KFPlayerReplicationInfo(PlayerOwner().PlayerReplicationInfo).ClientVeteranSkill;
+
+    if (!KFPlayerController(PlayerOwner()).bChangedVeterancyThisWave) {
+        perkSelect.EnableMe();
+        for(i= 0; i < perks.Length; i++) {
+            perkSelect.AddItem(perks[i].default.VeterancyName, perks[i].default.OnHUDIcon);
+            if (playerPerk == perks[i]) {
+                perkSelect.SetIndex(i);
+            }
+        }
+        perkSelect.OnChange=InternalOnChange;
+    } else {
+        perkSelect.Edit.SetText(playerPerk.default.VeterancyName);
+    }
 }
 
-function bool InternalOnClick(GUIComponent Sender) {
-    local PlayerController PC;
+event Closed(GUIComponent Sender, bool bCancelled) {
+    super.Closed(Sender, bCancelled);
 
-    // Grab the Player Controller for later use
-    PC= PlayerOwner();
-    if (Sender.IsA('KFIndexedGUIImage') && !KFPlayerController(PC).bChangedVeterancyThisWave) {
-        kfrLRepInfo.changePerk(KFIndexedGUIImage(Sender).Index);
-        bPerkChange = true;
+    perkSelect.OnChange=None;
+    perkSelect.Clear();
+    kfrLRepInfo= None;
+}
+
+function InternalOnChange(GUIComponent sender) {
+    if (sender == perkSelect) {
+        kfrLRepInfo.changePerk(perkSelect.GetIndex());
+        perkSelect.DisableMe();
     }
-    
-    return false;   
 }
 
 function bool MyOnDraw(Canvas C) {
-    local int i, j;
+    local class<KFVeterancyTypes> perk;
 
     super.OnDraw(C);
-    
+    perk= KFPlayerReplicationInfo(PlayerOwner().PlayerReplicationInfo).ClientVeteranSkill;
     C.SetDrawColor(255, 255, 255, 255);
-    
-    // make em square
-    if (!bResized) {
-        ResizeIcons(C);
-    }   
-        
-    // Current perk background
     C.SetPos(WinLeft * C.ClipX , WinTop * C.ClipY);
-    C.DrawTileScaled(CurPerkBack, (WinHeight * C.ClipY) / CurPerkBack.USize, (WinHeight * C.ClipY) / CurPerkBack.USize);
-    
-    // check if the current perk has changed recently
-
-    CheckPerks(KFStatsAndAchievements);
-
-    j = 0;
-    
-    // Draw the available perks
-    for (i = 0; i < MaxPerks; i++) {
-        if (i != CurPerk) {      
-            PerkSelectIcons[j].Image = kfrLRepInfo.pack.getPerks()[i].default.OnHUDIcon;
-            PerkSelectIcons[j].Index = i;
+    C.DrawTileScaled(perkBack, (WinHeight * C.ClipY) / perkBack.USize, (WinHeight * C.ClipY) / perkBack.USize);
+    C.DrawTileScaled(perk.default.OnHUDIcon, (WinHeight * C.ClipY) / perk.default.OnHUDIcon.USize, 
+            (WinHeight * C.ClipY) / perk.default.OnHUDIcon.USize);
         
-            if (KFPlayerController(PlayerOwner()).bChangedVeterancyThisWave) {
-                PerkSelectIcons[j].ImageColor.A = 64;   
-            }
-            else {
-                PerkSelectIcons[j].ImageColor.A = 255;  
-            }
-            
-            j++;
-        }
-    }
-
-    // Draw current perk
-    DrawCurrentPerk(C, CurPerk);
-    
     return false;
 }
 
-function DrawCurrentPerk(Canvas C, Int PerkIndex) {
-    local class<KFVeterancyTypes> perk;
+defaultproperties {
+    perkBack=Texture'KF_InterfaceArt_tex.Menu.Perk_box'
 
-    perk= kfrLRepInfo.pack.getPerks()[PerkIndex];
-    C.SetPos(WinLeft * C.ClipX , WinTop * C.ClipY);
-    C.DrawTileScaled(perk.default.OnHUDIcon, (WinHeight * C.ClipY) / perk.default.OnHUDIcon.USize, 
-            (WinHeight * C.ClipY) / perk.default.OnHUDIcon.USize);
-}
+    Begin Object Class=GUIListBox Name=ListBox1
+        StyleName="ComboListBox"
+        RenderWeight=0.700000
+        bTabStop=False
+        bVisible=False
+        bNeverScale=True
+        DefaultListClass="KFRollback.SelectablePerksList"
+    End Object
 
-function CheckPerks(KFSteamStatsAndAchievements StatsAndAchievements) {
-    local int i;
-    local KFPlayerController KFPC;
-
-    // Grab the Player Controller for later use
-    KFPC = KFPlayerController(PlayerOwner());
-                                                                                         
-    // Hold onto our reference
-    KFStatsAndAchievements = StatsAndAchievements;
-
-    // Update the ItemCount and select the first item
-    MaxPerks = kfrLRepInfo.pack.getPerks().Length;
-    //SetIndex(0);
-
-    for (i = 0; i < MaxPerks; i++) {
-        if (kfrLRepInfo.pack.getPerks()[i] == KFPC.SelectedVeterancy) {
-            CurPerk = i;
-        }
-    }
-    
-    bPerkChange = false;
+    Begin Object class=GUIComboBox Name=QS
+        WinTop=0.031400
+        WinLeft=0.09000
+        WinWidth=0.215000
+        WinHeight=0.030000
+        MyListBox=ListBox1
+    End Object
+    perkSelect=QS
 }
