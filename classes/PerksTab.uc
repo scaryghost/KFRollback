@@ -2,6 +2,7 @@ class PerksTab extends KFTab_Perks;
 
 var KFRLinkedReplicationInfo kfrLRepInfo;
 var automated moNumericEdit perkLevels;
+var GUIComboBox perksBox;
 
 function ShowPanel(bool bShow) {
     super(UT2K4TabPanel).ShowPanel(bShow);
@@ -38,7 +39,6 @@ function InternalOnChange(GUIComponent sender) {
 
 function OnPerkSelected(GUIComponent Sender) {
     lb_PerkEffects.SetContent(kfrLRepInfo.pack.getPerks()[lb_PerkSelect.GetIndex()].default.LevelEffects[kfrLRepInfo.desiredPerkLevel]);
-    lb_PerkProgress.List.PerkChanged(KFStatsAndAchievements, lb_PerkSelect.GetIndex());
 }
 
 function bool OnSaveButtonClicked(GUIComponent Sender) {
@@ -49,7 +49,9 @@ function bool OnSaveButtonClicked(GUIComponent Sender) {
     if (KFPlayerController(PC).bChangedVeterancyThisWave && KFPlayerController(PC).SelectedVeterancy != kfrLRepInfo.pack.getPerks()[lb_PerkSelect.GetIndex()]) {
         l_ChangePerkOncePerWave.SetVisibility(true);
     } else {
-        kfrLRepInfo.changePerk(lb_PerkSelect.GetIndex());
+        perksBox.SetIndex(lb_PerkSelect.GetIndex());
+        perksBox.Edit.SetText(KFPlayerController(PC).SelectedVeterancy.default.VeterancyName);
+        PerksBox.Edit.SetFocus(None);
     }
 
     return true;

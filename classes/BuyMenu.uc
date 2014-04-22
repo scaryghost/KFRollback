@@ -1,6 +1,19 @@
 class BuyMenu extends GUIBuyMenu_Story;
 
-var automated GUIMultiComponent quickPerk;
+var automated QuickPerkSelect quickPerk;
+
+function InitTabs() {
+    local int i;
+
+    super.InitTabs();
+
+    for(i= 0; i < c_Tabs.TabStack.Length; i++) {
+        if (c_Tabs.TabStack[i].MyPanel.IsA('PerksTab')) {
+            PerksTab(c_Tabs.TabStack[i].MyPanel).perksBox= quickPerk.perkSelect;
+            break;
+        }
+    }
+}
 
 function UpdateHeader() {
     if (PlayerOwner().GameReplicationInfo.IsA('KF_StoryGRI')) {
