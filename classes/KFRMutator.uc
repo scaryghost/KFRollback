@@ -36,6 +36,7 @@ function PostBeginPlay() {
     }
     
     DeathMatch(Level.Game).LoginMenuClass= loginMenuClass;
+    gameType.MonsterCollection= pack.getMonstersCollection();
 }
 
 function bool CheckReplacement(Actor Other, out byte bSuperRelevant) {
@@ -61,7 +62,7 @@ function bool CheckReplacement(Actor Other, out byte bSuperRelevant) {
         }
     } else if (KFLevelRules(Other) != none) {
         KFLevelRules(Other).ItemForSale= pack.getWeaponPickups();
-    }
+    } 
 
     return super.CheckReplacement(Other, bSuperRelevant);
 }

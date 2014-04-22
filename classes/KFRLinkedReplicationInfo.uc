@@ -19,7 +19,10 @@ simulated function Tick(float DeltaTime) {
 
     super.Tick(DeltaTime);
 
-    if (pack == None && Role < ROLE_Authority) {
+    if (Role == ROLE_Authority && PlayerController(Owner).SteamStatsAndAchievements != None) {
+        PlayerController(Owner).SteamStatsAndAchievements.Destroy();
+        PlayerController(Owner).SteamStatsAndAchievements= spawn(class'KFRollback.KFRSteamStats', Owner);
+    } else if (pack == None && Role < ROLE_Authority) {
         pack= new class<RollbackPack>(DynamicLoadObject(packName, class'Class'));
         foreach DynamicActors(class'KFMod.KFLevelRules', it) {
             it.ItemForSale= pack.getWeaponPickups();
@@ -175,12 +178,13 @@ simulated function sendPerkToServer(class<KFVeterancyTypes> perk, int level) {
             kfRepInfo.ClientVeteranSkill = kfPC.SelectedVeterancy;
             kfRepInfo.ClientVeteranSkillLevel= level;
 
-            if( KFHumanPawn(kfPC.Pawn) != none ) {
+            if (KFHumanPawn(kfPC.Pawn) != none) {
                 KFHumanPawn(kfPC.Pawn).VeterancyChanged();
             }    
         } else {
             kfPC.ClientMessage(kfPC.PerkChangeOncePerWaveString);
         }
+        desiredPerkLevel= level;
     }
 }
 
