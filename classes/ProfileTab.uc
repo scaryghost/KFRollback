@@ -73,11 +73,11 @@ function SaveSettings() {
 
 function OnPerkSelected(GUIComponent Sender) {
     lb_PerkEffects.SetContent(kfrLRepInfo.pack.getPerks()[lb_PerkSelect.GetIndex()].default.LevelEffects[kfrLRepInfo.desiredPerkLevel]);
-    lb_PerkProgress.List.PerkChanged(KFStatsAndAchievements, lb_PerkSelect.GetIndex());
 }
 
 defaultproperties {
     modelSelectClass="KFRollback.ModelSelect"
+    lb_PerkProgress=None
 
     Begin Object Class=KFPerkSelectListBox Name=PerkSelectBox
         OnCreateComponent=PerkSelectBox.InternalOnCreateComponent

@@ -37,10 +37,11 @@ function bool OnSaveButtonClicked(GUIComponent Sender) {
 
 function OnPerkSelected(GUIComponent Sender) {
     lb_PerkEffects.SetContent(kfrLRepInfo.pack.getPerks()[lb_PerkSelect.GetIndex()].default.LevelEffects[kfrLRepInfo.desiredPerkLevel]);
-    lb_PerkProgress.List.PerkChanged(KFStatsAndAchievements, lb_PerkSelect.GetIndex());
 }
 
 defaultproperties {
+    lb_PerkProgress=None
+
     Begin Object Class=KFPerkSelectListBox Name=PerkSelectBox
         OnCreateComponent=PerkSelectBox.InternalOnCreateComponent
         WinTop=0.057760
