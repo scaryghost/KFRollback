@@ -4,6 +4,7 @@ class RollbackPack extends Object
 struct DualInfo {
     var class<KFWeapon> dualWeapon;
     var clasS<KFWeapon> singleWeapon;
+    var bool keepPrice;
 };
 
 function array<class<KFVeterancyTypes> > getPerks();

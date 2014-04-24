@@ -29,7 +29,6 @@ function int PopulateBuyables()
     local int currentIndex, i, j, DualDivider, dualIndex;
     local bool bZeroWeight, skip;
 
-    DualDivider = 1;
 
     dualWeapons= kfrLRepInfo.pack.getDualWeapons();
     // Grab Players Veterancy for quick reference
@@ -49,6 +48,7 @@ function int PopulateBuyables()
     {
         if ( KFLR.ItemForSale[j] != none )
         {
+            DualDivider = 1;
             skip= false;
             ForSalePickup = class<KFWeaponPickup>(KFLR.ItemForSale[j]);
 
@@ -65,8 +65,10 @@ function int PopulateBuyables()
             //}
 
             for(i= 0; i < dualWeapons.Length && !skip; i++) {
-                skip= ForSalePickup.default.InventoryType == dualWeapons[i].singleWeapon && IsInInventory(dualWeapons[i].dualWeapon.default.PickupClass);
-                if (ForSalePickup.default.InventoryType == dualWeapons[i].dualWeapon && IsInInventory(dualWeapons[i].singleWeapon.default.PickupClass)) {
+                skip= ForSalePickup.default.InventoryType == dualWeapons[i].singleWeapon && 
+                        IsInInventory(dualWeapons[i].dualWeapon.default.PickupClass);
+                if (ForSalePickup.default.InventoryType == dualWeapons[i].dualWeapon && !dualWeapons[i].keepPrice && 
+                        IsInInventory(dualWeapons[i].singleWeapon.default.PickupClass)) {
                     DualDivider= 2;
                     break;
                 }
@@ -110,7 +112,6 @@ function int PopulateBuyables()
 
             if (dualIndex < dualWeapons.Length) {
                 ForSaleBuyable.ItemWeight= ForSalePickup.default.Weight - dualWeapons[dualIndex].singleWeapon.default.Weight;
-                log("I am a dual weapon!"@ForSaleBuyable.ItemWeight);
             } else  {
                 ForSaleBuyable.ItemWeight   = ForSalePickup.default.Weight;
             }
