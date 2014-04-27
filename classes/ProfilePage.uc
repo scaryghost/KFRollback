@@ -1,5 +1,10 @@
 class ProfilePage extends KFProfilePage;
 
+function SaveButtonClicked() {
+    ProfileTab(ProfilePanel).saveButtonPressed= true;
+    super.SaveButtonClicked();
+}
+
 defaultproperties {
     Begin Object Class=ProfileTab Name=Panel
         WinTop=0.010000

@@ -3,6 +3,7 @@ class ProfileTab extends KFTab_Profile;
 var KFRLinkedReplicationInfo kfrLRepInfo;
 var string modelSelectClass;
 var automated moNumericEdit perkLevels;
+var bool saveButtonPressed;
 
 function InitComponent(GUIController MyController, GUIComponent MyOwner) {
     super.InitComponent(MyController, MyOwner);
@@ -10,7 +11,6 @@ function InitComponent(GUIController MyController, GUIComponent MyOwner) {
     
     kfrLRepInfo= class'KFRLinkedReplicationInfo'.static.findLRI(PlayerOwner().PlayerReplicationInfo);
     perkLevels.Setup(0, kfrLRepInfo.pack.getMaxPerkLevel(), 1);
-    perkLevels.SetValue(kfrLRepInfo.desiredPerkLevel);
     i_BGPerkNextLevel.UnManageComponent(lb_PerkProgress);
     i_BGPerkNextLevel.ManageComponent(perkLevels);
 }
@@ -23,6 +23,7 @@ function ShowPanel(bool bShow) {
         }
 
         lb_PerkSelect.List.InitList(KFStatsAndAchievements);
+        perkLevels.SetValue(kfrLRepInfo.desiredPerkLevel);
     }
 
     lb_PerkSelect.SetPosition(i_BGPerks.WinLeft + 6.0 / float(Controller.ResX),
@@ -38,13 +39,6 @@ function bool PickModel(GUIComponent Sender) {
     }
 
     return true;
-}
-
-function InternalOnChange(GUIComponent sender) {
-    if (sender == perkLevels) {
-        kfrLRepInfo.desiredPerkLevel= perkLevels.GetValue();
-        OnPerkSelected(sender);
-    }
 }
 
 function SaveSettings() {
@@ -67,12 +61,15 @@ function SaveSettings() {
             PC.UpdateURL("Sex", "M", True);
         }
     }
-
-    kfrLRepInfo.changePerk(lb_PerkSelect.GetIndex());
+    if (saveButtonPressed) {
+        kfrLRepInfo.desiredPerkLevel= perkLevels.GetValue();
+        kfrLRepInfo.changePerk(lb_PerkSelect.GetIndex());
+        saveButtonPressed= false;
+    }
 }
 
 function OnPerkSelected(GUIComponent Sender) {
-    lb_PerkEffects.SetContent(kfrLRepInfo.pack.getPerks()[lb_PerkSelect.GetIndex()].default.LevelEffects[kfrLRepInfo.desiredPerkLevel]);
+    lb_PerkEffects.SetContent(kfrLRepInfo.pack.getPerks()[lb_PerkSelect.GetIndex()].default.LevelEffects[perkLevels.GetValue()]);
 }
 
 defaultproperties {
@@ -103,7 +100,7 @@ defaultproperties {
     Begin Object class=moNumericEdit Name=PerkLevelsBox
         Caption="Perk Level"
         Hint="Set perk level"
-        OnChange=ProfileTab.InternalOnChange
+        OnChange=ProfileTab.OnPerkSelected
     End Object
     perkLevels=moNumericEdit'KFRollback.ProfileTab.PerkLevelsBox'
 }

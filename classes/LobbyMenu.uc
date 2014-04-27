@@ -267,7 +267,7 @@ function DrawPerk(Canvas Canvas) {
 
     // Draw Icon
     Canvas.SetPos(TempX + IconBorder * Height, TempY + IconBorder * Height);
-    Canvas.DrawTile(kfrLRepInfo.pack.getPerks()[CurIndex].default.OnHUDIcon, IconSize, IconSize, 0, 0, 256, 256);
+    Canvas.DrawTile(KFPlayerController(PlayerOwner()).SelectedVeterancy.default.OnHUDIcon, IconSize, IconSize, 0, 0, 256, 256);
 
     TempX+= IconSize + (IconToInfoSpacing * Width);
     TempY+= TextTopOffset * Height + ItemBorder * Height;

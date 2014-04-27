@@ -13,6 +13,7 @@ function ShowPanel(bool bShow) {
 
             // Initialize the List
             lb_PerkSelect.List.InitList(KFStatsAndAchievements);
+            perkLevels.SetValue(kfrLRepInfo.desiredPerkLevel);
         }
 
         l_ChangePerkOncePerWave.SetVisibility(false);
@@ -24,21 +25,13 @@ function InitComponent(GUIController MyController, GUIComponent MyOwner) {
     
     kfrLRepInfo= class'KFRLinkedReplicationInfo'.static.findLRI(PlayerOwner().PlayerReplicationInfo);
     perkLevels.Setup(0, kfrLRepInfo.pack.getMaxPerkLevel(), 1);
-    perkLevels.SetValue(kfrLRepInfo.desiredPerkLevel);
     i_BGPerkNextLevel.UnManageComponent(lb_PerkProgress);
     i_BGPerkNextLevel.ManageComponent(perkLevels);
 
 }
 
-function InternalOnChange(GUIComponent sender) {
-    if (sender == perkLevels) {
-        kfrLRepInfo.desiredPerkLevel= perkLevels.GetValue();
-        OnPerkSelected(sender);
-    }
-}
-
 function OnPerkSelected(GUIComponent Sender) {
-    lb_PerkEffects.SetContent(kfrLRepInfo.pack.getPerks()[lb_PerkSelect.GetIndex()].default.LevelEffects[kfrLRepInfo.desiredPerkLevel]);
+    lb_PerkEffects.SetContent(kfrLRepInfo.pack.getPerks()[lb_PerkSelect.GetIndex()].default.LevelEffects[perkLevels.GetValue()]);
 }
 
 function bool OnSaveButtonClicked(GUIComponent Sender) {
@@ -49,6 +42,7 @@ function bool OnSaveButtonClicked(GUIComponent Sender) {
     if (KFPlayerController(PC).bChangedVeterancyThisWave && KFPlayerController(PC).SelectedVeterancy != kfrLRepInfo.pack.getPerks()[lb_PerkSelect.GetIndex()]) {
         l_ChangePerkOncePerWave.SetVisibility(true);
     } else {
+        kfrLRepInfo.desiredPerkLevel= perkLevels.GetValue();
         perksBox.SetIndex(lb_PerkSelect.GetIndex());
         perksBox.Edit.SetText(KFPlayerController(PC).SelectedVeterancy.default.VeterancyName);
         PerksBox.Edit.SetFocus(None);
@@ -82,7 +76,7 @@ defaultproperties {
     i_BGPerkNextLevel=GUISectionBackground'KFRollback.PerksTab.BGPerksNextLevel'
 
     Begin Object Class=moNumericEdit Name=PerkLevelsBox
-        OnChange=PerksTab.InternalOnChange
+        OnChange=PerksTab.OnPerkSelected
         Caption="Perk Level"
         Hint="Set perk level"
     End Object

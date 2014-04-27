@@ -9,7 +9,6 @@ function InitComponent(GUIController MyController, GUIComponent MyOwner) {
     
     kfrLRepInfo= class'KFRLinkedReplicationInfo'.static.findLRI(PlayerOwner().PlayerReplicationInfo);
     perkLevels.Setup(0, kfrLRepInfo.pack.getMaxPerkLevel(), 1);
-    perkLevels.SetValue(kfrLRepInfo.desiredPerkLevel);
     i_BGPerkNextLevel.UnManageComponent(lb_PerkProgress);
     i_BGPerkNextLevel.ManageComponent(perkLevels);
 }
@@ -19,24 +18,19 @@ function ShowPanel(bool bShow) {
 
     if (bShow && PlayerOwner() != none) {
         lb_PerkSelect.List.InitList(KFStatsAndAchievements);
+        perkLevels.SetValue(kfrLRepInfo.desiredPerkLevel);
         InitGRI();
     }
 }
 
-function InternalOnChange(GUIComponent sender) {
-    if (sender == perkLevels) {
-        kfrLRepInfo.desiredPerkLevel= perkLevels.GetValue();
-        OnPerkSelected(sender);
-    }
+function OnPerkSelected(GUIComponent Sender)  {
+    lb_PerkEffects.SetContent(kfrLRepInfo.pack.getPerks()[lb_PerkSelect.GetIndex()].default.LevelEffects[perkLevels.GetValue()]);
 }
 
 function bool OnSaveButtonClicked(GUIComponent Sender) {
+    kfrLRepInfo.desiredPerkLevel= perkLevels.GetValue();
     kfrLRepInfo.changePerk(lb_PerkSelect.GetIndex());
     return true;
-}
-
-function OnPerkSelected(GUIComponent Sender) {
-    lb_PerkEffects.SetContent(kfrLRepInfo.pack.getPerks()[lb_PerkSelect.GetIndex()].default.LevelEffects[kfrLRepInfo.desiredPerkLevel]);
 }
 
 defaultproperties {
@@ -66,7 +60,7 @@ defaultproperties {
     Begin Object class=moNumericEdit Name=PerkLevelsBox
         Caption="Perk Level"
         Hint="Set perk level"
-        OnChange=MidGamePerksTab.InternalOnChange
+        OnChange=MidGamePerksTab.OnPerkSelected
     End Object
     perkLevels=moNumericEdit'KFRollback.MidGamePerksTab.PerkLevelsBox'
 }
