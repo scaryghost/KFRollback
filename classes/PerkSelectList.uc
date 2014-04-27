@@ -41,6 +41,14 @@ function InitList(KFSteamStatsAndAchievements StatsAndAchievements) {
     }
 }
 
+function updateLevelStrings(int newLevel) {
+    local int i;
+
+    for(i= 0; i < ItemCount; i++) {
+        PerkLevelString[i]= LvAbbrString @ newLevel;
+    }
+}
+
 function DrawPerk(Canvas Canvas, int CurIndex, float X, float Y, float Width, float Height, bool bSelected, bool bPending) {
     local float TempX, TempY;
     local float IconSize, ProgressBarWidth;

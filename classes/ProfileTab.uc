@@ -70,6 +70,9 @@ function SaveSettings() {
 
 function OnPerkSelected(GUIComponent Sender) {
     lb_PerkEffects.SetContent(kfrLRepInfo.pack.getPerks()[lb_PerkSelect.GetIndex()].default.LevelEffects[perkLevels.GetValue()]);
+    if (Sender == perkLevels) {
+        PerkSelectList(lb_PerkSelect.List).updateLevelStrings(perkLevels.GetValue());
+    }
 }
 
 defaultproperties {
